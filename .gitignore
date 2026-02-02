@@ -1,0 +1,32 @@
+# Laravel
+/vendor/
+/node_modules/
+/.env
+/.env.*
+/storage/*.key
+/storage/debugbar/*
+/public/storage
+/public/hot
+/public/uploads
+/.phpunit.result.cache
+Homestead.yaml
+Homestead.json
+
+# React / Next.js
+/.next
+/out
+/build
+/node_modules
+/npm-debug.log
+/yarn-error.log
+
+# OS Specific
+.DS_Store
+Thumbs.db
+
+# IDE Specific
+/.vscode
+.idea
+
+# Logs and temporary files
+*.log
