@@ -336,3 +336,7 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+.receipt-container { max-width: 380px; } /* 80mm roll */
+@media print {
+    @page { margin: 0.2in; } /* Adjust for each printer */
+}
