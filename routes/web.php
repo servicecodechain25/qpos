@@ -1,8 +1,8 @@
 <?php
-
 use App\Http\Controllers\Backend\CurrencyController;
 use App\Http\Controllers\Backend\Pos\CartController;
 use App\Http\Controllers\Backend\Product\ProductController;
+use App\Http\Controllers\Backend\Product\BarcodeController;
 use App\Http\Controllers\Backend\Report\ReportController;
 use App\Http\Controllers\Backend\SupplierController;
 use App\Http\Controllers\CustomerController;
@@ -162,3 +162,7 @@ Route::get('storage-link', function () {
 });
 
 Route::get('test', [TestController::class, 'test'])->name('test');
+Route::post('/admin/product/barcode/bulkGenerate', [BarcodeController::class, 'bulkGenerate']);
+Route::get('/admin/barcode-generator', function () {
+    return view('backend.barcode-generator');
+})->name('backend.barcode.generator');

@@ -10,8 +10,9 @@
         <div class="col-4">
           <h2 class="page-header">
             <img src="{{ assetImage(readconfig('site_logo')) }}" height="40" width="40" alt="Logo"
-              class="brand-image img-circle elevation-3" style="opacity: .8"> {{ readConfig('site_name') }}
+              class="brand-image img-circle elevation-3" style="opacity: .8"> Code Chain POS
           </h2>
+          <!-- {{ readConfig('site_name') }} -->
         </div>
         <div class="col-4">
           <h4 class="page-header">Collection Invoice</h4>

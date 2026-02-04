@@ -63,12 +63,13 @@ $route = request()->route()->getName();
                     @endcan
                     @can('product_view')
                     <li class="nav-item">
-                        <a href="{{ route('backend.admin.products.index') }}"
-                            class="nav-link {{ request()->routeIs(['backend.admin.products.index', 'backend.admin.products.edit']) ? 'active' : '' }}">
-                            <i class="fas fa-circle nav-icon"></i>
-                            <p>Barcode Generator</p>
-                        </a>
-                    </li>
+    <a href="{{ route('backend.barcode.generator') }}"
+       class="nav-link {{ request()->routeIs('backend.barcode.generator') ? 'active' : '' }}">
+        <i class="fas fa-barcode nav-icon"></i>
+        <p>Barcode Generator</p>
+    </a>
+</li>
+
                     @endcan
                 </ul>
             </li>

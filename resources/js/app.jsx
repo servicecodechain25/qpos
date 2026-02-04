@@ -3,13 +3,14 @@ import React from 'react'
 import Pos from "./components/Pos";
 import Purchase from './components/Purchase/Purchase';
 import ProductBarcode from './components/ProductBarcode';
+import BarcodeBulkGenerate from "./components/BarcodeBulkGenerate";
+import "../css/app.css";
 import { createRoot } from 'react-dom/client';
 // export default function app() {
 //   return (
 //     <Pos />
 //   )
 // }
-
 // Check for the 'cart' element and render the 'cart' component using createRoot
 if (document.getElementById("cart")) {
     const cartRoot = createRoot(document.getElementById("cart"));
@@ -31,3 +32,7 @@ if (document.getElementById("product-barcode")) {
     barcodeRoot.render(<ProductBarcode code={barcodeCode} />);
 }
 
+if (document.getElementById("barcode-bulk-generator")) {
+    const barcodeRoot = createRoot(document.getElementById("barcode-bulk-generator"));
+    barcodeRoot.render(<BarcodeBulkGenerate/>);
+}

@@ -5,6 +5,8 @@ import html2canvas from 'html2canvas';
 
 const ProductBarcode = ({ code, format = 'CODE128' }) => {
     const barcodeRef = useRef(null);
+console.log("barcodeRef",barcodeRef);
+console.log("code",code);
 
     const printBarcode = () => {
         const printWindow = window.open('', '_blank');
