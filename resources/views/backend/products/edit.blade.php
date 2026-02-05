@@ -60,10 +60,10 @@
           <div class="mb-3 col-md-6">
             <label for="price" class="form-label">
               Price
-              <span class="text-danger">*</span>
+              <!-- <span class="text-danger">*</span> -->
             </label>
             <input type="number" step="0.01" min="0" class="form-control"
-              placeholder="Enter price" name="price" value="{{ old('price',$product->price) }}" required>
+              placeholder="Enter price" name="price" value="{{ old('price',$product->price) }}">
           </div>
           <div class="mb-3 col-md-6">
             <label for="unit_id" class="form-label">
@@ -141,10 +141,10 @@
           <div class="mb-3 col-md-6">
             <label for="purchase_price" class="form-label">
               Purchase Price
-              <span class="text-danger">*</span>
+              <!-- <span class="text-danger">*</span> -->
             </label>
             <input type="number" step="0.01" min="0" class="form-control"
-              placeholder="Enter purchase Price" name="purchase_price" value="{{ old('purchase_price',$product->purchase_price) }}" required>
+              placeholder="Enter purchase Price" name="purchase_price" value="{{ old('purchase_price',$product->purchase_price) }}">
           </div>
           <div class="mb-3 col-md-6">
             <label for="thumbnailInput" class="form-label">
