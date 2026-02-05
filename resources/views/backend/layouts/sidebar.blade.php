@@ -190,6 +190,20 @@ $route = request()->route()->getName();
                         </a>
                     </li>
                     @endif
+                    <li class="nav-item">
+                        <a href="{{route('backend.admin.colors.index')}}"
+                            class="nav-link {{ request()->routeIs([ 'backend.admin.colors.index', 'backend.admin.colors.create', 'backend.admin.colors.edit']) ? 'active' : '' }}">
+                            <i class="fas fa-circle nav-icon"></i>
+                            <p>Colors</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{route('backend.admin.sizes.index')}}"
+                            class="nav-link {{ request()->routeIs([ 'backend.admin.sizes.index', 'backend.admin.sizes.create', 'backend.admin.sizes.edit']) ? 'active' : '' }}">
+                            <i class="fas fa-circle nav-icon"></i>
+                            <p>Sizes</p>
+                        </a>
+                    </li>
                 </ul>
             </li>
             @endif

@@ -89,10 +89,12 @@ class CustomerController extends Controller
         if ($request->wantsJson()) {
             $request->validate([
                 'name' => 'required|string',
+                'phone' => 'nullable|string|max:20|unique:customers,phone',
             ]);
 
             $customer = Customer::create([
                 'name' => $request->name,
+                'phone' => $request->phone,
             ]);
 
             return response()->json($customer);

@@ -80,6 +80,11 @@ class OrderController extends Controller
                 'numeric',
                 'min:0',
             ],
+            'guest_phone' => [
+                'nullable',
+                'string',
+                'max:20',
+            ],
         ], [
             'customer_id.required' => 'Please select a customer.',
             'customer_id.exists' => 'The selected customer does not exist.',
@@ -90,6 +95,7 @@ class OrderController extends Controller
         $order = Order::create([
             'customer_id' => $request->customer_id,
             'user_id' => $request->user()->id,
+            'guest_phone' => $request->guest_phone,
         ]);
         $totalAmountOrder = 0;
         $orderDiscount = $request->order_discount;

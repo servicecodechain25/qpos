@@ -80,6 +80,34 @@
               @endforeach
             </select>
           </div>
+          <div class="mb-3 col-md-6">
+            <label for="color_id" class="form-label">
+              Color
+            </label>
+            <select class="form-control select2" style="width: 100%;" name="color_id">
+              <option value="">Select Color</option>
+              @foreach ($colors as $item)
+              <option value={{ $item->id }}
+                {{ $product->color_id == $item->id ? 'selected' : '' }}>
+                {{ $item->name }}
+              </option>
+              @endforeach
+            </select>
+          </div>
+          <div class="mb-3 col-md-6">
+            <label for="size_id" class="form-label">
+              Size
+            </label>
+            <select class="form-control select2" style="width: 100%;" name="size_id">
+              <option value="">Select Size</option>
+              @foreach ($sizes as $item)
+              <option value={{ $item->id }}
+                {{ $product->size_id == $item->id ? 'selected' : '' }}>
+                {{ $item->name }}
+              </option>
+              @endforeach
+            </select>
+          </div>
           <!-- <div class="mb-3 col-md-6">
           <label for="quantity" class="form-label">
             Initial Stock

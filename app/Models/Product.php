@@ -26,6 +26,8 @@ class Product extends Model
         'quantity',
         'expire_date',
         'status',
+        'color_id',
+        'size_id',
     ];
     protected $appends = ['discounted_price'];
 

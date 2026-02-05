@@ -12,6 +12,8 @@ use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\Unit;
+use App\Models\Color;
+use App\Models\Size;
 use App\Trait\FileHandler;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
@@ -108,7 +110,9 @@ class ProductController extends Controller
         $brands = Brand::whereStatus(true)->get();
         $categories = Category::whereStatus(true)->get();
         $units = Unit::all();
-        return view('backend.products.create', compact('brands', 'categories', 'units'));
+        $colors = Color::whereStatus(true)->get();
+        $sizes = Size::whereStatus(true)->get();
+        return view('backend.products.create', compact('brands', 'categories', 'units', 'colors', 'sizes'));
     }
 
     /**
@@ -148,7 +152,9 @@ class ProductController extends Controller
         $brands = Brand::whereStatus(true)->get();
         $categories = Category::whereStatus(true)->get();
         $units = Unit::all();
-        return view('backend.products.edit', compact('brands', 'categories', 'units', 'product'));
+        $colors = Color::whereStatus(true)->get();
+        $sizes = Size::whereStatus(true)->get();
+        return view('backend.products.edit', compact('brands', 'categories', 'units', 'product', 'colors', 'sizes'));
     }
 
     /**

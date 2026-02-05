@@ -11,11 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('sizes', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->tinyInteger('status')->default(1);
-            $table->timestamps();
+        Schema::table('orders', function (Blueprint $table) {
+            $table->string('guest_phone')->nullable()->after('customer_id');
         });
     }
 
@@ -24,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('sizes');
+        Schema::table('orders', function (Blueprint $table) {
+            $table->dropColumn('guest_phone');
+        });
     }
 };

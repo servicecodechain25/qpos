@@ -73,7 +73,7 @@ export default function Cart({ carts, setCartUpdated, cartUpdated }) {
         <>
             <div className="user-cart">
                 <div className="card">
-                    <div className="card-body">
+                    <div className="card-body" style={{ padding: '0px' }}>
                         <div className="responsive-table">
                             <table className="table table-striped">
                                 <thead>
@@ -126,8 +126,8 @@ export default function Cart({ carts, setCartUpdated, cartUpdated }) {
                                             <td className="text-right">
                                                 {item?.product?.discounted_price}
                                                 {item?.product?.price >
-                                                item?.product
-                                                    ?.discounted_price ? (
+                                                    item?.product
+                                                        ?.discounted_price ? (
                                                     <>
                                                         <br />
                                                         <del>

@@ -27,7 +27,19 @@
             </div>
             <div class="col-6 text-right">
                 Date: {{ date('d/m/Y', strtotime($order->created_at)) }}<br>
-                Bill No: {{ $order->id }}
+                Bill No: {{ $order->id }}<br>
+            </div>
+            <div class="col-6 text-left">
+                @if($order->customer)
+                    Name: {{ $order->customer->name }}<br>
+                @endif
+                </div>
+                <div class="col-6 text-right">
+                @if($order->guest_phone)
+                    Ph: {{ $order->guest_phone }}
+                <!-- @elseif($order->customer && $order->customer->phone)
+                    Ph: {{ $order->customer->phone }}
+                @endif -->
             </div>
         </div>
     </div>

@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import Cart from "./Cart";
@@ -23,13 +23,13 @@ export default function Pos() {
     const [productUpdated, setProductUpdated] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     const [searchBarcode, setSearchBarcode] = useState("");
+    const [guestPhone, setGuestPhone] = useState("");
     const { protocol, hostname, port } = window.location;
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
     const [loading, setLoading] = useState(false);
-    const fullDomainWithPort = `${protocol}//${hostname}${
-        port ? `:${port}` : ""
-    }`;
+    const fullDomainWithPort = `${protocol}//${hostname}${port ? `:${port}` : ""
+        }`;
     const getProducts = useCallback(
         async (search = "", page = 1, barcode = "") => {
             setLoading(true);
@@ -111,7 +111,7 @@ export default function Pos() {
     useEffect(() => {
         if (searchBarcode) {
             setProducts([]);
-           getProducts("", currentPage, searchBarcode);
+            getProducts("", currentPage, searchBarcode);
         }
     }, [searchBarcode]);
 
@@ -207,6 +207,7 @@ export default function Pos() {
                         customer_id: customerId,
                         order_discount: parseFloat(orderDiscount) || 0,
                         paid: parseFloat(paid) || 0,
+                        guest_phone: guestPhone,
                     })
                     .then((res) => {
                         setCartUpdated(!cartUpdated);
@@ -214,6 +215,7 @@ export default function Pos() {
                         toast.success(res?.data?.message);
                         // window.location.href = `orders/invoice/${res?.data?.order?.id}`;
                         window.location.href = `orders/pos-invoice/${res?.data?.order?.id}`;
+                        setGuestPhone("");
                     })
                     .catch((err) => {
                         toast.error(err.response.data.message);
@@ -243,11 +245,21 @@ export default function Pos() {
 
                 <div className="card-body p-2 p-md-4 pt-0">
                     <div className="row">
-                        <div className="col-md-6 col-lg-5 mb-2">
+                        <div className="col-md-6 col-lg-6 mb-2">
                             <div className="row mb-2">
                                 <div className="col-12">
                                     <CustomerSelect
                                         setCustomerId={setCustomerId}
+                                        setGuestPhone={setGuestPhone}
+                                    />
+                                </div>
+                                <div className="col-12 mt-2">
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        placeholder="Phone Number"
+                                        value={guestPhone}
+                                        onChange={(e) => setGuestPhone(e.target.value)}
                                     />
                                 </div>
                                 {/* <div className="col-6">
@@ -297,7 +309,7 @@ export default function Pos() {
                                                         e.target.value;
                                                     if (
                                                         parseFloat(value) >
-                                                            total ||
+                                                        total ||
                                                         parseFloat(value) < 0
                                                     ) {
                                                         return;
@@ -354,7 +366,7 @@ export default function Pos() {
                                                     if (
                                                         parseFloat(value) < 0 ||
                                                         parseFloat(value) >
-                                                            updateTotal
+                                                        updateTotal
                                                     ) {
                                                         return;
                                                     }
@@ -394,7 +406,7 @@ export default function Pos() {
                                 </div>
                             </div>
                         </div>
-                        <div className="col-md-6 col-lg-7">
+                        <div className="col-md-6 col-lg-6">
                             <div className="row">
                                 <div className="input-group mb-2 col-md-6">
                                     <div class="input-group-prepend">
