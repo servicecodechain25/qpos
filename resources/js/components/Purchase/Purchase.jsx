@@ -55,6 +55,7 @@ export default function Purchase() {
                 purchase_price: item.purchase_price,
                 stock: item.stock,
                 qty: item.quantity,
+                sku: item.sku,
                 subTotal: item.purchase_price * item.quantity,
                 uid: `${item.product_id}-${Math.random().toString(36).substr(2, 9)}`,
             }));
@@ -101,6 +102,7 @@ export default function Purchase() {
                         purchase_price: product.purchase_price,
                         stock: product.quantity,
                         qty: 1,
+                        sku: product.sku,
                         subTotal: product.purchase_price,
                     };
                     setProducts((prevProducts) => [
@@ -157,6 +159,67 @@ export default function Purchase() {
             return product;
         });
         setProducts(updatedProducts);
+    };
+
+    const handlePrintLabel = async (product, mode = 'barcode') => {
+        try {
+            const res = await axios.post("/admin/product/barcode/bulkGenerate", {
+                product_id: product.id,
+                quantity: 1,
+            });
+            const barcodeData = res.data[0];
+
+            const printControl = `
+                <html>
+                    <head>
+                        <title>Print ${mode === 'barcode' ? 'Barcode' : 'Label'}</title>
+                        <style>
+                            @page { size: 38mm 25mm; margin: 0; }
+                            body { margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; height: 25mm; width: 38mm; font-family: sans-serif; }
+                            .label {
+                                width: 38mm;
+                                height: 25mm;
+                                padding: 1mm;
+                                box-sizing: border-box;
+                                text-align: center;
+                                display: flex;
+                                flex-direction: column;
+                                justify-content: space-between;
+                            }
+                            .name { font-size: 8px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+                            img { width: 100%; height: ${mode === 'barcode' ? '12mm' : '0'}; object-fit: contain; display: ${mode === 'barcode' ? 'block' : 'none'}; }
+                            .sku { font-size: 7px; margin: 0; }
+                            .prices { display: ${mode === 'label' ? 'flex' : 'none'}; justify-content: space-between; font-size: 7px; font-weight: bold; border-top: 1px dashed black; padding-top: 0.5mm; }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="label">
+                            <div class="name">${product.name}</div>
+                            <img src="${barcodeData.img}" />
+                            <div class="sku">${product.sku}</div>
+                            <div class="prices">
+                                <span>P: ${product.price}</span>
+                                <span>P.P: ${product.purchase_price}</span>
+                            </div>
+                        </div>
+                        <script>
+                            window.onload = () => {
+                                window.print();
+                                setTimeout(() => window.close(), 500);
+                            };
+                        </script>
+                    </body>
+                </html>
+            `;
+
+            const printWindow = window.open('', '_blank', 'width=400,height=300');
+            printWindow.document.write(printControl);
+            printWindow.document.close();
+
+        } catch (error) {
+            console.error("Error printing:", error);
+            toast.error("Failed to generate.");
+        }
     };
     // Add a new product by searching
     const handleSearchAdd = () => {
@@ -287,6 +350,7 @@ export default function Purchase() {
             purchase_price: product.purchase_price,
             stock: product.quantity,
             qty: 1,
+            sku: product.sku,
             subTotal: product.purchase_price,
         };
         setProducts((prevProducts) => [...prevProducts, newProduct]);
@@ -447,12 +511,40 @@ export default function Purchase() {
                                                 </td>
                                                 <td>
                                                     <button
-                                                        className="btn btn-danger btn-sm"
+                                                        className="btn btn-info btn-xs mr-1"
+                                                        onClick={() =>
+                                                            handlePrintLabel(
+                                                                product,
+                                                                'barcode'
+                                                            )
+                                                        }
+                                                        type="button"
+                                                        title="Print Barcode"
+                                                    >
+                                                        Barcode
+                                                    </button>
+                                                    <button
+                                                        className="btn btn-success btn-xs mr-1"
+                                                        onClick={() =>
+                                                            handlePrintLabel(
+                                                                product,
+                                                                'label'
+                                                            )
+                                                        }
+                                                        type="button"
+                                                        title="Print Label"
+                                                    >
+                                                        Label
+                                                    </button>
+                                                    <button
+                                                        className="btn btn-danger btn-xs"
                                                         onClick={() =>
                                                             handleDelete(
                                                                 product.uid
                                                             )
                                                         }
+                                                        type="button"
+                                                        title="Delete"
                                                     >
                                                         Delete
                                                     </button>
@@ -582,7 +674,7 @@ export default function Purchase() {
                 >
                     Create
                 </button>
-            </div>
+            </div >
 
             <Toaster position="top-right" reverseOrder={false} />
         </>

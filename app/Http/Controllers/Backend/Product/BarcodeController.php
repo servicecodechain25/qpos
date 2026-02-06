@@ -29,6 +29,9 @@ class BarcodeController extends Controller
 
             $barcodes[] = [
                 'value' => $code,
+                'name' => $product->name,
+                'price' => $product->price,
+                'purchase_price' => $product->purchase_price,
                 'img' => 'data:image/png;base64,' . base64_encode($image),
             ];
         }
