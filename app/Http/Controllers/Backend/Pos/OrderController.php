@@ -36,9 +36,9 @@ class OrderController extends Controller
                 ->addColumn('action', function ($data) {
                     $buttons = '';
 
-                    $buttons .= '<a class="btn btn-success btn-sm" href="' . route('backend.admin.orders.invoice', $data->id) . '"><i class="fas fa-file-invoice"></i> Invoice</a>';
+                    $buttons .= '<button class="btn btn-success btn-sm" onclick="openPrintWindow(\'' . route('backend.admin.orders.invoice', $data->id) . '\', \'Invoice\')"><i class="fas fa-file-invoice"></i> Invoice</button>';
 
-                    $buttons .= '<a class="btn btn-secondary btn-sm" href="' . route('backend.admin.orders.pos-invoice', $data->id) . '"><i class="fas fa-file-invoice"></i> Pos Invoice</a>';
+                    $buttons .= '<button class="btn btn-secondary btn-sm ml-1" onclick="openPrintWindow(\'' . route('backend.admin.orders.pos-invoice', $data->id) . '\', \'PosInvoice\')"><i class="fas fa-file-invoice"></i> Pos Invoice</button>';
                     if (!$data->status) {
                         $buttons .= '<a class="btn btn-warning btn-sm" href="' . route('backend.admin.due.collection', $data->id) . '"><i class="fas fa-receipt"></i> Due Collection</a>';
                     }

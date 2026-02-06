@@ -213,8 +213,11 @@ export default function Pos() {
                         setCartUpdated(!cartUpdated);
                         setProductUpdated(!productUpdated);
                         toast.success(res?.data?.message);
-                        // window.location.href = `orders/invoice/${res?.data?.order?.id}`;
-                        window.location.href = `orders/pos-invoice/${res?.data?.order?.id}`;
+                        const width = 450;
+                        const height = 600;
+                        const left = (window.screen.width - width) / 2;
+                        const top = (window.screen.height - height) / 2;
+                        window.open(`orders/pos-invoice/${res?.data?.order?.id}`, 'PrintReceipt', `width=${width},height=${height},top=${top},left=${left},scrollbars=yes`);
                         setGuestPhone("");
                     })
                     .catch((err) => {

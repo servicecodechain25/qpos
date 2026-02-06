@@ -210,6 +210,13 @@
     <script src="{{ asset('dist/js/adminlte.js') }}"></script>
     <!-- Select2 -->
     <script src="{{ asset('plugins/select2/js/select2.full.min.js') }}"></script>
+    <script>
+        function openPrintWindow(url, title = 'Print', w = 450, h = 600) {
+            const left = (window.screen.width - w) / 2;
+            const top = (window.screen.height - h) / 2;
+            window.open(url, title, `width=${w},height=${h},top=${top},left=${left},scrollbars=yes`);
+        }
+    </script>
     {{-- custom script --}}
     <script src="{{ asset('js/custom-script.js') }}"></script>
     <!-- dropzonejs -->

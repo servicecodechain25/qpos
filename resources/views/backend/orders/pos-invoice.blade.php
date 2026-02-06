@@ -107,28 +107,31 @@
 /* General receipt styles */
 .receipt-container {
     background-color: #fff;
-    padding: 5px 10px;
+    padding: 2mm;
     font-family: 'Courier New', Courier, monospace;
     color: #000;
     line-height: 1.2;
     width: 100%;
+    max-width: 50.8mm; /* Standard 2 inch width */
+    margin: 0 auto;
+    box-sizing: border-box;
 }
 
 /* Header */
-.brand-name { font-weight: 900; font-size: 20px; margin: 0; text-transform: uppercase; }
-.tagline { font-style: italic; font-size: 12px; margin-bottom: 3px; }
+.brand-name { font-weight: 900; font-size: 18px; margin: 0; text-transform: uppercase; }
+.tagline { font-style: italic; font-size: 11px; margin-bottom: 3px; }
 .dashed-line { border: none; border-top: 1px dashed #000; margin: 5px 0; }
 
 /* Table */
-.receipt-table { width: 100%; font-size: 12px; border-collapse: collapse; }
+.receipt-table { width: 100%; font-size: 11px; border-collapse: collapse; }
 .receipt-table th { border-bottom: 1px dashed #000; padding-bottom: 3px; }
 
 /* Footer */
-.receipt-footer { font-size: 10px; margin-top: 5px; }
+.receipt-footer { font-size: 9px; margin-top: 5px; }
 
 /* Summary */
-.summary-section { font-size: 12px; margin-top: 3px; }
-.summary-section .grand-total { font-weight: bold; }
+.summary-section { font-size: 11px; margin-top: 3px; }
+.summary-section .grand-total { font-weight: bold; font-size: 12px; }
 
 /* PRINT STYLES */
 @media print {
@@ -157,7 +160,8 @@
     }
 
     @page {
-        margin: 0.2in; /* Adjust for thermal printer widths */
+        size: 50.8mm auto;
+        margin: 2mm;
     }
 }
 </style>

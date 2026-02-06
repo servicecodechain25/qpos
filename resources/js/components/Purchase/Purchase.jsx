@@ -174,32 +174,33 @@ export default function Purchase() {
                     <head>
                         <title>Print ${mode === 'barcode' ? 'Barcode' : 'Label'}</title>
                         <style>
-                            @page { size: 38mm 25mm; margin: 0; }
-                            body { margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; height: 25mm; width: 38mm; font-family: sans-serif; }
+                            @page { size: 50.8mm 38.1mm; margin: 2mm; }
+                            body { margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; height: 38.1mm; width: 50.8mm; font-family: sans-serif; }
                             .label {
-                                width: 38mm;
-                                height: 25mm;
-                                padding: 1mm;
+                                width: 50.8mm;
+                                height: 38.1mm;
+                                padding: 2mm;
                                 box-sizing: border-box;
                                 text-align: center;
                                 display: flex;
                                 flex-direction: column;
-                                justify-content: space-between;
+                                justify-content: center;
+                                align-items: center;
                             }
-                            .name { font-size: 8px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-                            img { width: 100%; height: ${mode === 'barcode' ? '12mm' : '0'}; object-fit: contain; display: ${mode === 'barcode' ? 'block' : 'none'}; }
-                            .sku { font-size: 7px; margin: 0; }
-                            .prices { display: ${mode === 'label' ? 'flex' : 'none'}; justify-content: space-between; font-size: 7px; font-weight: bold; border-top: 1px dashed black; padding-top: 0.5mm; }
+                            .name { font-size: 11px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; margin-bottom: 3px; }
+                            img { width: auto; max-width: 95%; height: ${mode === 'barcode' ? '18mm' : '0'}; object-fit: contain; display: ${mode === 'barcode' ? 'block' : 'none'}; }
+                            .sku { font-size: 10px; margin: 2px 0; font-weight: bold; }
+                            .prices { width: 100%; display: ${mode === 'label' ? 'flex' : 'none'}; justify-content: space-between; font-size: 10px; font-weight: bold; border-top: 1px dashed black; padding-top: 3px; }
                         </style>
                     </head>
                     <body>
                         <div class="label">
                             <div class="name">${product.name}</div>
                             <img src="${barcodeData.img}" />
-                            <div class="sku">${product.sku}</div>
+                            <div class="sku">${barcodeData.value}</div>
                             <div class="prices">
-                                <span>P: ${product.price}</span>
-                                <span>P.P: ${product.purchase_price}</span>
+                                <span>MRP: ${barcodeData.purchase_price}</span>
+                                <span>C Price: ${barcodeData.price}</span>
                             </div>
                         </div>
                         <script>
@@ -212,7 +213,11 @@ export default function Purchase() {
                 </html>
             `;
 
-            const printWindow = window.open('', '_blank', 'width=400,height=300');
+            const width = 450;
+            const height = 600;
+            const left = (window.screen.width - width) / 2;
+            const top = (window.screen.height - height) / 2;
+            const printWindow = window.open('', 'PrintLabel', `width=${width},height=${height},top=${top},left=${left},scrollbars=yes`);
             printWindow.document.write(printControl);
             printWindow.document.close();
 

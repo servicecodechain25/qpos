@@ -1,12 +1,12 @@
-.barcode-grid {
+/* .barcode-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, 32mm);
   gap: 2mm;
 }
 
 .barcode-label {
-  width: 32mm;
-  height: 15mm;
+  width: 100%;
+  height: 100%;
   padding: 1mm;
   box-sizing: border-box;
   border: 0.2mm dashed #999;
@@ -15,11 +15,24 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+} */
+.barcode-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+}
+
+.barcode-label {
+  border: 1px dashed #ccc;
+  padding: 8px;
+  text-align: center;
 }
 
 .barcode-label img {
-  width: 100%;   /* approximate width for 32mm */
-  height: 60px;   /* approximate height for 15mm */
+  width: 100%;
+  /* approximate width for 32mm */
+  height: 60px;
+  /* approximate height for 15mm */
 }
 
 .barcode-text {
@@ -28,7 +41,8 @@
   margin-top: 0.5mm;
   white-space: nowrap;
 }
-@media print {
+
+/* @media print {
   body * {
     visibility: hidden;
   }
@@ -47,7 +61,8 @@
   button {
     display: none !important;
   }
-}
+} */
+
 /* Barcode Generator Custom Styles */
 
 .barcode-generator-wrapper {
@@ -219,29 +234,29 @@
 }
 
 /* Print Styles */
-@media print {
+/* @media print {
   body * {
     visibility: hidden;
   }
-  
+
   .barcode-item,
   .barcode-item * {
     visibility: visible;
   }
-  
+
   .barcode-item {
     page-break-inside: avoid;
     break-inside: avoid;
   }
-  
+
   @page {
     margin: 1cm;
   }
-  
+
   .d-print-none {
     display: none !important;
   }
-}
+} */
 
 /* Font Weight Helpers */
 .font-weight-semibold {
@@ -308,6 +323,7 @@
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -336,7 +352,72 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
-.receipt-container { max-width: 380px; } /* 80mm roll */
-@media print {
-    @page { margin: 0.2in; } /* Adjust for each printer */
+
+.receipt-container {
+  max-width: 380px;
+}
+
+/* 80mm roll */
+/* @media print {
+  @page {
+    size: 1.5in 2in;
+    margin: 0.2in;
+  }
+
+} */
+/* @media print {
+  @page {
+    size: 1.5in 2in;
+    margin: 0;
+  }
+
+  body {
+    margin: 0;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .print-only {
+    display: block;
+  }
+
+  .barcode-label-print {
+    width: 1.5in;
+    height: 2in;
+    padding: 6px;
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+
+    page-break-after: always;
+  }
+
+  .barcode-label-print img {
+    width: 100%;
+    height: auto;
+    max-height: 0.8in;
+  }
+
+  .barcode-text {
+    font-size: 9px;
+    font-weight: bold;
+    margin-top: 2px;
+  }
+
+  .price-info {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    font-size: 8px;
+  }
+} */
+
+/* Hide print layout on screen */
+.print-only {
+  display: none;
 }
