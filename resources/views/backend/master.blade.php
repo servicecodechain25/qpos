@@ -219,7 +219,7 @@
     <script src="{{ asset('assets/js/datatable/datatable.js') }}"></script>
     <script src="{{ asset('assets/js/datatable/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('assets/js/datatable/dataTables.buttons.min.js') }}"></script>
-
+    <div id="datepicker-portal"></div>
     @stack('script')
 </body>
 

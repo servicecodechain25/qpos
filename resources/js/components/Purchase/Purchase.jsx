@@ -56,9 +56,10 @@ export default function Purchase() {
                 stock: item.stock,
                 qty: item.quantity,
                 subTotal: item.purchase_price * item.quantity,
+                uid: `${item.product_id}-${Math.random().toString(36).substr(2, 9)}`,
             }));
             setProducts(purchaseProducts);
-            setDate(purchaseData?.date ? purchaseData.date.split(" ")[0] : "");
+            setDate(purchaseData?.date ? new Date(purchaseData.date) : null);
             setSelectedSupplier({
                 value: purchaseData?.supplier_id,
                 label: purchaseData?.supplier?.name,
@@ -91,36 +92,21 @@ export default function Purchase() {
             // Ensure productsData and productsData.data exist
             if (productsData?.data && productsData.data.length) {
                 productsData.data.forEach((product) => {
-                    const existingProductIndex = products.findIndex(
-                        (p) => p.id === product.id
-                    );
-                    if (existingProductIndex !== -1) {
-                        // Product exists, increment qty
-                        setProducts((prevProducts) => {
-                            const updatedProducts = [...prevProducts];
-                            updatedProducts[existingProductIndex].qty += 1; // Increment qty
-                            updatedProducts[existingProductIndex].subTotal =
-                                updatedProducts[existingProductIndex]
-                                    .purchase_price *
-                                updatedProducts[existingProductIndex].qty; // Update subTotal
-                            return updatedProducts;
-                        });
-                    } else {
-                        // New product, add to the list
-                        const newProduct = {
-                            id: product.id,
-                            name: product.name,
-                            price: product.price,
-                            purchase_price: product.purchase_price,
-                            stock: product.quantity,
-                            qty: 1,
-                            subTotal: product.purchase_price,
-                        };
-                        setProducts((prevProducts) => [
-                            ...prevProducts,
-                            newProduct,
-                        ]);
-                    }
+                    // All products are now added as new entries to allow different prices
+                    const newProduct = {
+                        id: product.id,
+                        uid: `${product.id}-${Math.random().toString(36).substr(2, 9)}`,
+                        name: product.name,
+                        price: product.price,
+                        purchase_price: product.purchase_price,
+                        stock: product.quantity,
+                        qty: 1,
+                        subTotal: product.purchase_price,
+                    };
+                    setProducts((prevProducts) => [
+                        ...prevProducts,
+                        newProduct,
+                    ]);
                 });
             }
         } catch (error) {
@@ -134,15 +120,15 @@ export default function Purchase() {
         }
     }, [searchTerm]); // Don't forget to add searchTerm as a dependency
 
-    // Handle deletion of a product
-    const handleDelete = (id) => {
-        setProducts(products.filter((product) => product.id !== id));
+    // Handle deletion of a product using unique identifier
+    const handleDelete = (uid) => {
+        setProducts(products.filter((product) => product.uid !== uid));
     };
 
-    // Update quantity and recalculate subtotal
-    const handleQtyChange = (id, value) => {
+    // Update quantity and recalculate subtotal using unique identifier
+    const handleQtyChange = (uid, value) => {
         const updatedProducts = products.map((product) => {
-            if (product.id === id) {
+            if (product.uid === uid) {
                 const newQty = parseInt(value) || 0;
                 return {
                     ...product,
@@ -157,10 +143,10 @@ export default function Purchase() {
         setProducts(updatedProducts);
     };
 
-    // Update purchase price and recalculate subtotal
-    const handlePriceChange = (id, value) => {
+    // Update purchase price and recalculate subtotal using unique identifier
+    const handlePriceChange = (uid, value) => {
         const updatedProducts = products.map((product) => {
-            if (product.id === id) {
+            if (product.uid === uid) {
                 const newPrice = parseFloat(value) || 0;
                 return {
                     ...product,
@@ -215,6 +201,13 @@ export default function Purchase() {
             toast.error("Please select purchase date.");
             return;
         }
+
+        const formattedDate = date instanceof Date
+            ? date.getFullYear() + '-' +
+            String(date.getMonth() + 1).padStart(2, '0') + '-' +
+            String(date.getDate()).padStart(2, '0')
+            : date;
+
         if (!supplierId) {
             toast.error("Please select a supplier.");
             return;
@@ -242,7 +235,7 @@ export default function Purchase() {
                 try {
                     const res = await axios.post("/admin/purchase", {
                         purchase_id: purchaseId,
-                        date,
+                        date: formattedDate,
                         products,
                         supplierId,
                         totals,
@@ -285,33 +278,18 @@ export default function Purchase() {
     // Handle adding selected product to the products list
     // Handle adding selected product to the products list
     const handleProductSelect = (product) => {
-        const existingProductIndex = products.findIndex(
-            (p) => p.id === product.id
-        );
-
-        if (existingProductIndex !== -1) {
-            // If product exists, increment quantity
-            setProducts((prevProducts) => {
-                const updatedProducts = [...prevProducts];
-                updatedProducts[existingProductIndex].qty += 1;
-                updatedProducts[existingProductIndex].subTotal =
-                    updatedProducts[existingProductIndex].purchase_price *
-                    updatedProducts[existingProductIndex].qty;
-                return updatedProducts;
-            });
-        } else {
-            // Add new product to the list
-            const newProduct = {
-                id: product.id,
-                name: product.name,
-                price: product.price,
-                purchase_price: product.purchase_price,
-                stock: product.quantity,
-                qty: 1,
-                subTotal: product.purchase_price,
-            };
-            setProducts((prevProducts) => [...prevProducts, newProduct]);
-        }
+        // Add new product entry with a unique identifier to allow duplicates with different prices
+        const newProduct = {
+            id: product.id,
+            uid: `${product.id}-${Math.random().toString(36).substr(2, 9)}`,
+            name: product.name,
+            price: product.price,
+            purchase_price: product.purchase_price,
+            stock: product.quantity,
+            qty: 1,
+            subTotal: product.purchase_price,
+        };
+        setProducts((prevProducts) => [...prevProducts, newProduct]);
 
         // Clear search term and results
         setSearchTerm("");
@@ -333,16 +311,10 @@ export default function Purchase() {
                                         name="date"
                                         className="form-control"
                                         placeholderText="Enter purchase date"
-                                        selected={date}
+                                        selected={date instanceof Date ? date : (date ? new Date(date) : null)}
                                         dateFormat="yyyy-MM-dd"
-                                        onChange={(date) => {
-                                            const formattedDate = date
-                                                ? date
-                                                      .toISOString()
-                                                      .split("T")[0]
-                                                : null;
-                                            setDate(formattedDate);
-                                        }}
+                                        onChange={(date) => setDate(date)}
+                                        portalId="datepicker-portal"
                                     />
                                 </div>
                             </div>
@@ -408,8 +380,10 @@ export default function Purchase() {
                                                 }
                                                 style={{ cursor: "pointer" }}
                                             >
-                                                {product.name} - $
-                                                {product.price}
+                                                {product.name}
+                                                {product.color ? ` - ${product.color}` : ""}
+                                                {product.size ? ` - ${product.size}` : ""}
+                                                - ${product.price}
                                             </li>
                                         ))}
                                     </ul>
@@ -432,7 +406,7 @@ export default function Purchase() {
                                     </thead>
                                     <tbody>
                                         {products.map((product, index) => (
-                                            <tr key={product.id}>
+                                            <tr key={product.uid}>
                                                 <td>{index + 1}</td>
                                                 <td>{product.name}</td>
                                                 <td className="d-flex align-items-center justify-content-center">
@@ -445,7 +419,7 @@ export default function Purchase() {
                                                         }
                                                         onChange={(e) =>
                                                             handlePriceChange(
-                                                                product.id,
+                                                                product.uid,
                                                                 e.target.value
                                                             )
                                                         }
@@ -460,7 +434,7 @@ export default function Purchase() {
                                                         value={product.qty}
                                                         onChange={(e) =>
                                                             handleQtyChange(
-                                                                product.id,
+                                                                product.uid,
                                                                 e.target.value
                                                             )
                                                         }
@@ -476,7 +450,7 @@ export default function Purchase() {
                                                         className="btn btn-danger btn-sm"
                                                         onClick={() =>
                                                             handleDelete(
-                                                                product.id
+                                                                product.uid
                                                             )
                                                         }
                                                     >

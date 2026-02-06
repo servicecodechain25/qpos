@@ -13,6 +13,9 @@
     width: 100%;
     box-sizing: border-box;
   }
+  .react-datepicker-popper{
+    z-index: 10000 !important;
+  }
 </style>
 @endpush
 @push('script')

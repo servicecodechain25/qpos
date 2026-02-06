@@ -66,6 +66,14 @@ class Product extends Model
     {
         return $this->belongsTo(Unit::class);
     }
+    public function color()
+    {
+        return $this->belongsTo(Color::class);
+    }
+    public function size()
+    {
+        return $this->belongsTo(Size::class);
+    }
     public function scopeActive($query)
     {
         return $query->where('status', 1);

@@ -28,6 +28,8 @@ class ProductResource extends JsonResource
             'quantity' => $this->quantity,
             'status' => $this->status,
             'created_at' => $this->created_at,
+            'color' => optional($this->color)->name,
+            'size' => optional($this->size)->name,
             // 'image_url' => $this->getImageUrl(),
         ];
     }
