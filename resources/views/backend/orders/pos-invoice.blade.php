@@ -3,7 +3,8 @@
 
 @section('content')
 
-<div class="receipt-container" id="printable-section">
+<div class="pos-invoice-outer" id="printable-section">
+    <div class="receipt-container">
     
     {{-- Header --}}
     <div class="text-center receipt-header">
@@ -98,65 +99,119 @@
         <p class="policy">NO REFUND / NO EXCHANGE</p>
     </div>
 
+    </div>
 </div>
 
 @endsection
 
 @push('style')
 <style>
-/* General receipt styles */
-.receipt-container {
-    background-color: #fff;
-    padding: 2mm;
-    font-family: 'Courier New', Courier, monospace;
-    color: #000;
-    line-height: 1.2;
+/* Remove layout padding and hide page title so only the bill is visible and centered */
+section.content:has(#printable-section),
+section.content:has(#printable-section) .container-fluid {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    max-width: 100% !important;
+}
+body:has(#printable-section) .content-header {
+    display: none !important;
+}
+
+/* Outer wrapper: full width, center bill horizontally and vertically on screen */
+.pos-invoice-outer {
     width: 100%;
-    max-width: 50.8mm; /* Standard 2 inch width */
-    margin: 0 auto;
+    min-height: 100vh;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    padding: 1rem;
     box-sizing: border-box;
 }
 
+/* Receipt: always visible, readable size, centered */
+.receipt-container {
+    background-color: #fff !important;
+    color: #000 !important;
+    padding: 10px 12px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 15px;
+    line-height: 1.35;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 340px;
+    min-width: 280px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+    border: 1px solid #e0e0e0;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
 /* Header */
-.brand-name { font-weight: 900; font-size: 18px; margin: 0; text-transform: uppercase; }
-.tagline { font-style: italic; font-size: 11px; margin-bottom: 3px; }
-.dashed-line { border: none; border-top: 1px dashed #000; margin: 5px 0; }
+.receipt-header .brand-name { font-weight: 900; font-size: 22px; margin: 0; text-transform: uppercase; color: #000; }
+.receipt-header .tagline { font-style: italic; font-size: 14px; margin-bottom: 4px; color: #000; }
+.receipt-header .categories { font-size: 12px; margin-top: 2px; color: #000; }
+.dashed-line { border: none; border-top: 1px dashed #000; margin: 8px 0; }
+
+/* Meta (date, bill no, name, phone) */
+.receipt-meta { font-size: 14px; color: #000; }
 
 /* Table */
-.receipt-table { width: 100%; font-size: 11px; border-collapse: collapse; }
-.receipt-table th { border-bottom: 1px dashed #000; padding-bottom: 3px; }
+.receipt-table { width: 100%; font-size: 14px; border-collapse: collapse; color: #000; }
+.receipt-table th { border-bottom: 1px dashed #000; padding: 4px 0; font-size: 14px; color: #000; }
+.receipt-table td { padding: 3px 0; color: #000; }
 
 /* Footer */
-.receipt-footer { font-size: 9px; margin-top: 5px; }
+.receipt-footer { font-size: 12px; margin-top: 8px; color: #000; }
+.receipt-footer p { margin-bottom: 4px; color: #000; }
 
 /* Summary */
-.summary-section { font-size: 11px; margin-top: 3px; }
-.summary-section .grand-total { font-weight: bold; font-size: 12px; }
+.summary-section { font-size: 14px; margin-top: 6px; color: #000; }
+.summary-section .grand-total { font-weight: bold; font-size: 16px; color: #000; }
+.receipt-container .text-right small { font-size: 13px; color: #000; }
 
-/* PRINT STYLES */
+/* PRINT: hide only chrome, keep bill visible and centered */
 @media print {
-    body * { visibility: hidden; }
-    #printable-section, #printable-section * { visibility: visible; }
-    #printable-section {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        margin: 0 !important;
-        padding: 0 !important;
-    }
-
-    body, .wrapper, .content-wrapper, .card {
-        background: #fff !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        border: none !important;
-        display: block !important;
-        overflow: visible !important;
-    }
-
-    .no-print, .main-sidebar, .main-header, .main-footer {
+    .no-print,
+    .main-sidebar,
+    .main-header,
+    .main-footer,
+    .content-header {
         display: none !important;
+        visibility: hidden !important;
+    }
+
+    body, .wrapper, .content-wrapper, .content, .container-fluid {
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #fff !important;
+        display: block !important;
+        visibility: visible !important;
+    }
+
+    .pos-invoice-outer {
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        min-height: 100% !important;
+        height: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        background: #fff !important;
+        visibility: visible !important;
+    }
+
+    .receipt-container {
+        width: 50.8mm !important;
+        max-width: 50.8mm !important;
+        min-width: unset !important;
+        box-shadow: none !important;
+        border: none !important;
+        visibility: visible !important;
+        opacity: 1 !important;
     }
 
     @page {

@@ -174,11 +174,12 @@ export default function Purchase() {
                     <head>
                         <title>Print ${mode === 'barcode' ? 'Barcode' : 'Label'}</title>
                         <style>
-                            @page { size: 50.8mm 38.1mm; margin: 2mm; }
-                            body { margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; height: 38.1mm; width: 50.8mm; font-family: sans-serif; }
+                            /* 1.5" x 2" label paper: 38.1mm x 50.8mm */
+                            @page { size: 38.1mm 50.8mm; margin: 0; }
+                            body { margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; height: 50.8mm; width: 38.1mm; font-family: sans-serif; }
                             .label {
-                                width: 50.8mm;
-                                height: 38.1mm;
+                                width: 38.1mm;
+                                height: 50.8mm;
                                 padding: 2mm;
                                 box-sizing: border-box;
                                 text-align: center;
@@ -187,10 +188,10 @@ export default function Purchase() {
                                 justify-content: center;
                                 align-items: center;
                             }
-                            .name { font-size: 11px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; margin-bottom: 3px; }
-                            img { width: auto; max-width: 95%; height: ${mode === 'barcode' ? '18mm' : '0'}; object-fit: contain; display: ${mode === 'barcode' ? 'block' : 'none'}; }
-                            .sku { font-size: 10px; margin: 2px 0; font-weight: bold; }
-                            .prices { width: 100%; display: ${mode === 'label' ? 'flex' : 'none'}; justify-content: space-between; font-size: 10px; font-weight: bold; border-top: 1px dashed black; padding-top: 3px; }
+                            .name { font-size: 9px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; margin-bottom: 2px; }
+                            img { width: auto; max-width: 34mm; max-height: ${mode === 'barcode' ? '24mm' : '0'}; object-fit: contain; display: ${mode === 'barcode' ? 'block' : 'none'}; }
+                            .sku { font-size: 8px; margin: 2px 0; font-weight: bold; }
+                            .prices { width: 100%; display: ${mode === 'label' ? 'flex' : 'none'}; justify-content: space-between; font-size: 8px; font-weight: bold; border-top: 1px dashed black; padding-top: 2px; }
                         </style>
                     </head>
                     <body>
@@ -213,8 +214,9 @@ export default function Purchase() {
                 </html>
             `;
 
-            const width = 450;
-            const height = 600;
+            /* 1.5" x 2" aspect ratio for preview */
+            const width = 285;
+            const height = 380;
             const left = (window.screen.width - width) / 2;
             const top = (window.screen.height - height) / 2;
             const printWindow = window.open('', 'PrintLabel', `width=${width},height=${height},top=${top},left=${left},scrollbars=yes`);

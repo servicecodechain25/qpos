@@ -153,6 +153,9 @@ const BarcodeBulkGenerate = () => {
           <button onClick={() => window.print()} className="btn btn-primary">
             🖨️ Print Barcodes
           </button>
+          <p className="text-muted small mt-2 mb-0">
+            Thermal printer: set paper size to <strong>1.5" × 2"</strong> and turn off <strong>Headers and footers</strong> in the print dialog so only labels print.
+          </p>
         </div>
       )}
 
@@ -207,73 +210,102 @@ const BarcodeBulkGenerate = () => {
       display: none !important;
     }
     
-    .print-only {
-      display: block !important;
+    /* Hide entire layout – only labels should print (no footer, sidebar, header) */
+    .main-footer,
+    .main-sidebar,
+    .main-header,
+    .content-header,
+    .navbar {
+      display: none !important;
     }
     
-    body {
+    .print-only {
+      display: block !important;
       margin: 0 !important;
       padding: 0 !important;
     }
     
+    body,
+    .wrapper,
+    .content-wrapper,
+    .content,
+    .container-fluid,
+    .container {
+      margin: 0 !important;
+      padding: 0 !important;
+      background: none !important;
+    }
+    
     @page {
-      size: 50.8mm 38.1mm;
+      size: 38.1mm 50.8mm;
       margin: 0;
     }
     
     .barcode-label-print {
-      width: 50.8mm;
-      height: 38.1mm;
-      margin: 0;
-      padding: 2mm;
+      width: 34.1mm;
+      height: 46.8mm;
+      margin: 0 !important;
+      margin-left: 0.4in !important;
+      margin-top: 0 !important;
+      margin-bottom: 0 !important;
+      padding: 0.2in;
       box-sizing: border-box;
       
       display: flex !important;
       flex-direction: column !important;
       align-items: center !important;
       justify-content: center !important;
-      text-align: center;
+      text-align: center !important;
       
-      page-break-after: always;
       page-break-inside: avoid;
-      break-after: page;
       break-inside: avoid;
     }
     
-    .barcode-label-print:last-child {
-      page-break-after: auto;
+    .barcode-label-print:first-child {
+      margin-top: 0 !important;
+      padding-top: 0.2in;
+    }
+    
+    .barcode-label-print:not(:first-child) {
+      page-break-before: always;
+      break-before: page;
+      margin-top: 0 !important;
     }
     
     .barcode-label-print img {
-      width: auto;
-      max-width: 46mm;
-      height: auto;
-      max-height: 20mm;
-      object-fit: contain;
-      display: block;
+      width: auto !important;
+      max-width: 26mm !important;
+      height: auto !important;
+      max-height: 14mm !important;
+      object-fit: contain !important;
+      display: block !important;
+      margin: 0 !important;
     }
     
     .barcode-label-print .product-name {
-      font-size: 9px;
+      font-size: 8px;
       font-weight: bold;
       margin: 0 0 1mm 0;
       max-width: 100%;
       line-height: 1.1;
       overflow: hidden;
       text-overflow: ellipsis;
+      text-align: center;
     }
     
     .barcode-label-print .barcode-text {
-      font-size: 8px;
+      font-size: 7px;
       margin: 1mm 0;
       line-height: 1;
       font-weight: bold;
       letter-spacing: 0.5px;
+      text-align: center;
     }
     
     .barcode-label-print .price-info {
-      font-size: 7px;
+      font-size: 6px;
       width: 100%;
+      max-width: 100%;
       border-top: 1px solid #000;
       padding-top: 1mm;
       margin-top: 1mm;
@@ -281,6 +313,8 @@ const BarcodeBulkGenerate = () => {
       justify-content: space-between;
       line-height: 1;
       font-weight: bold;
+      text-align: center;
+      box-sizing: border-box;
     }
   }
 `}} />
