@@ -119,7 +119,17 @@ const BarcodeBulkGenerate = () => {
         {barcodes.map((b, index) => (
           <div key={index} className="barcode-label">
             {/* <div className="product-name">{b.name}</div> */}
-            {printMode === "barcode" && <img src={b.img} alt={b.value} />}
+            {printMode === "barcode" && <img
+  src={b.img}
+  alt={b.value}
+  style={{
+    width: "100%",
+    imageRendering: "pixelated"
+  }}
+  className="barcode-img"
+/>
+
+}
             <div className="barcode-text">{b.value}</div>
             {/* {printMode === "label" && ( */}
             <div className="price-info">
@@ -171,10 +181,21 @@ const BarcodeBulkGenerate = () => {
     .barcode-label {
       border: 1px solid #ddd;
       padding: 10px;
+      width: 2in;
+    height: 1.5in;
       text-align: center;
       border-radius: 5px;
       background: #f9f9f9;
     }
+       .barcode-svg svg {
+    width: 100%;
+    height: 60px;
+  }
+     .barcode-img {
+    width: 100%;
+    height: auto;
+    image-rendering: pixelated; /* 🔥 critical */
+  }
     .product-name {
       font-weight: bold;
       font-size: 14px;
