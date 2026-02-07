@@ -167,6 +167,7 @@ Route::get('storage-link', function () {
 
 Route::get('test', [TestController::class, 'test'])->name('test');
 Route::post('/admin/product/barcode/bulkGenerate', [BarcodeController::class, 'bulkGenerate']);
+Route::get('/admin/product/barcode/generate', [BarcodeController::class, 'generate'])->name('backend.admin.barcode.generate');
 Route::get('/admin/barcode-generator', function () {
     return view('backend.barcode-generator');
 })->name('backend.barcode.generator');

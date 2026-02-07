@@ -120,16 +120,16 @@ const BarcodeBulkGenerate = () => {
           <div key={index} className="barcode-label">
             {/* <div className="product-name">{b.name}</div> */}
             {printMode === "barcode" && <img
-  src={b.img}
-  alt={b.value}
-  style={{
-    width: "100%",
-    imageRendering: "pixelated"
-  }}
-  className="barcode-img"
-/>
+              src={b.img}
+              alt={b.value}
+              style={{
+                width: "100%",
+                imageRendering: "pixelated"
+              }}
+              className="barcode-img"
+            />
 
-}
+            }
             <div className="barcode-text">{b.value}</div>
             {/* {printMode === "label" && ( */}
             <div className="price-info">
@@ -143,20 +143,20 @@ const BarcodeBulkGenerate = () => {
 
       {/* Hidden print-only section for better layout control */}
       <div className={`print-only mode-${printMode}`}>
-  {barcodes.map((b, index) => (
-    <div key={index} className={`barcode-label-print `}>
-      {/* <div className="product-name">{b.name}</div>  Uncommented – remove if not needed */}
-      {printMode === "barcode" && <img src={b.img} alt={b.value} />}
-      <div className="barcode-text">{b.value}</div>
-      {/* {printMode === "label" && ( */}
-        <div className="price-info">
-          <span>MRP: {b.purchase_price}</span>
-          <span>Cherry P: {b.price}</span>
-        </div>
-      {/* )} */}
-    </div>
-  ))}
-</div>
+        {barcodes.map((b, index) => (
+          <div key={index} className={`barcode-label-print `}>
+            {/* <div className="product-name">{b.name}</div>  Uncommented – remove if not needed */}
+            {printMode === "barcode" && <img src={b.img} alt={b.value} />}
+            <div className="barcode-text">{b.value}</div>
+            {/* {printMode === "label" && ( */}
+            <div className="price-info">
+              <span>MRP: {b.purchase_price}</span>
+              <span>Cherry P: {b.price}</span>
+            </div>
+            {/* )} */}
+          </div>
+        ))}
+      </div>
 
       {barcodes.length > 0 && (
         <div style={{ marginBottom: "15px", marginTop: "15px" }} className="no-print">
@@ -169,50 +169,44 @@ const BarcodeBulkGenerate = () => {
         </div>
       )}
 
-<style dangerouslySetInnerHTML={{
-  __html: `
-    /* === Screen preview styles – unchanged from your original === */
+      <style dangerouslySetInnerHTML={{
+        __html: `
+    /* === Screen preview styles === */
     .barcode-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
       gap: 15px;
       margin-top: 20px;
     }
     .barcode-label {
       border: 1px solid #ddd;
       padding: 10px;
-      width: 2in;
-    height: 1.5in;
       text-align: center;
       border-radius: 5px;
       background: #f9f9f9;
     }
-       .barcode-svg svg {
-    width: 100%;
-    height: 60px;
-  }
-     .barcode-img {
-    width: 100%;
-    height: auto;
-    image-rendering: pixelated; /* 🔥 critical */
-  }
+    .barcode-img {
+      width: 100%;
+      height: auto;
+      image-rendering: pixelated;
+    }
     .product-name {
       font-weight: bold;
-      font-size: 14px;
+      font-size: 13px;
       margin-bottom: 5px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
     .barcode-text {
-      font-size: 12px;
-      letter-spacing: 2px;
+      font-size: 11px;
+      letter-spacing: 1px;
       margin: 5px 0;
     }
     .price-info {
       display: flex;
       justify-content: space-between;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: bold;
       color: #333;
       border-top: 1px dashed #ccc;
@@ -223,176 +217,92 @@ const BarcodeBulkGenerate = () => {
     }
 
     @media print {
-      * {
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
+      @page {
+        size: 50.8mm 38.1mm;
+        margin: 0;
       }
       
-      .no-print {
-        display: none !important;
-      }
-      
-      .main-footer, .main-sidebar, .main-header, .content-header, .navbar {
-        display: none !important;
-      }
-      
-      body, .wrapper, .content-wrapper, .content, .container-fluid, .container {
-        margin: 0 !important;
-        padding: 0 !important;
-        background: none !important;
-      }
-      
-      .print-only {
-        display: block !important;
+      body {
         margin: 0 !important;
         padding: 0 !important;
       }
 
-      /* === BARCODE MODE – almost identical to your original code === */
-      @page {
-        size: 38.1mm 50.8mm;
-        margin: 0;
+      .no-print, 
+      .main-footer, 
+      .main-sidebar, 
+      .main-header, 
+      .content-header {
+        display: none !important;
       }
       
-      .barcode-label-print {
-        width: 34.1mm;
-        height: 46.8mm;
+      .print-only {
+        display: block !important;
+        width: 50.8mm !important;
+        height: 38.1mm !important;
         margin: 0 !important;
-        margin-left: 0.4in !important;           /* your original had this */
-        margin-top: 0 !important;
-        margin-bottom: 0 !important;
-        padding: 0.2in;
-        box-sizing: border-box;
-        
+        padding: 0 !important;
+        overflow: hidden !important;
+      }
+
+      .barcode-label-print {
+        width: 50.8mm !important;
+        height: 38.1mm !important;
+        padding: 2mm 4mm !important;
+        box-sizing: border-box !important;
         display: flex !important;
         flex-direction: column !important;
         align-items: center !important;
         justify-content: center !important;
         text-align: center !important;
-        
-        page-break-inside: avoid;
-        break-inside: avoid;
+        page-break-after: always !important;
+        break-after: page !important;
+        overflow: hidden !important;
       }
-      
-      .barcode-label-print:first-child {
-        margin-top: 0 !important;
-        padding-top: 0.2in;
+
+      .barcode-label-print:last-child {
+        page-break-after: auto !important;
+        break-after: auto !important;
       }
-      
-      .barcode-label-print:not(:first-child) {
-        page-break-before: always;
-        break-before: page;
-        margin-top: 0 !important;
+
+      .barcode-label-print .product-name {
+        font-size: 10pt !important;
+        font-weight: bold !important;
+        margin: 0 0 1mm 0 !important;
+        width: 100% !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
       }
-      
+
       .barcode-label-print img {
-        width: auto !important;
-        max-width: 26mm !important;
+        width: 100% !important;
         height: auto !important;
-        max-height: 14mm !important;
+        max-height: 18mm !important;
         object-fit: contain !important;
         display: block !important;
-        margin: 0 !important;
+        margin: 1mm 0 !important;
       }
-      
-      .barcode-label-print .product-name {
-        font-size: 8px;
-        font-weight: bold;
-        margin: 0 0 1mm 0;
-        max-width: 100%;
-        line-height: 1.1;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        text-align: center;
-      }
-      
+
       .barcode-label-print .barcode-text {
-        font-size: 7px;
-        margin: 1mm 0;
-        line-height: 1;
-        font-weight: bold;
-        letter-spacing: 0.5px;
-        text-align: center;
+        font-size: 9pt !important;
+        margin: 1mm 0 !important;
+        letter-spacing: 1mm !important;
+        font-weight: bold !important;
       }
-      
+
       .barcode-label-print .price-info {
-        font-size: 6px;
-        width: 100%;
-        max-width: 100%;
-        border-top: 1px solid #000;
-        padding-top: 1mm;
-        margin-top: 1mm;
-        display: flex;
-        justify-content: space-between;
-        line-height: 1;
-        font-weight: bold;
-        text-align: center;
-        box-sizing: border-box;
+        font-size: 9pt !important;
+        width: 100% !important;
+        border-top: 1px solid #000 !important;
+        padding-top: 1mm !important;
+        margin-top: 1mm !important;
+        display: flex !important;
+        justify-content: space-between !important;
+        font-weight: bold !important;
       }
-
-  /* === LABEL MODE – ultra-clean: force start at pixel 0, no feed blanks === */
-
-.mode-label @page {
-  size: 38.1mm 12.7mm;
-  margin: 0;
-}
-
-.mode-label .print-only,
-.mode-label .print-only * {
-  margin: 0 !important;
-  padding: 0 !important;
-}
-
-.mode-label .barcode-label-print {
-  width: 37.8mm !important;               /* max safe width */
-  height: 12.5mm !important;              /* use almost full height to avoid cut */
-  margin: 0 !important;
-  margin-left: 9mm !important;
-  padding: 0.3mm 1.5mm !important;        /* symmetric, minimal */
-  box-sizing: border-box !important;
-
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: flex-start !important;
-  align-items: center !important;
-  text-align: center !important;
-
-  page-break-before: avoid !important;
-  page-break-after: avoid !important;
-  page-break-inside: avoid !important;
-  break-before: avoid !important;
-  break-after: avoid !important;
-  break-inside: avoid !important;
-
-  overflow: hidden !important;
-}
-
-/* Zero everything on first label/content */
-.mode-label .barcode-label-print:first-of-type,
-.mode-label .barcode-label-print:first-child {
-  margin: 0 !important;
-  margin-left: 9mm !important;
-  padding-top: 0mm !important;
-}
-
-/* Children no extra space */
-.mode-label .product-name,
-.mode-label .barcode-text {
-  margin-top: 0 !important;
-  font-size: 7.2px !important;
-  line-height: 1 !important;
-}
-
-.mode-label .price-info {
-  font-size: 6.2px !important;
-  margin-top: 0.3mm !important;
-  padding-top: 0.2mm !important;
-  border-top: 0.4px solid #000 !important;
-  justify-content: center !important;
-  width: 100% !important;
-}
+    }
   `
-}} />
+      }} />
 
     </div>
   );

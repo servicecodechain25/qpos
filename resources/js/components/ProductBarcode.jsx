@@ -1,62 +1,69 @@
-import React, { useRef, useEffect } from 'react';
-import Barcode from 'react-barcode';
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
+import React from 'react';
 
-const ProductBarcode = ({ code, format = 'CODE128' }) => {
-    const barcodeRef = useRef(null);
-console.log("barcodeRef",barcodeRef);
-console.log("code",code);
-
+const ProductBarcode = ({ code }) => {
     const printBarcode = () => {
         const printWindow = window.open('', '_blank');
+        const barcodeUrl = `/admin/product/barcode/generate?code=${code}`;
+
         printWindow.document.write(`
             <html>
                 <head>
-                    <title>Barcode</title>
+                    <title>Print Barcode - ${code}</title>
                     <style>
-                        body { text-align: center; margin: 20px; }
-                        svg { max-width: 100%; height: auto; }
+                        @page { size: 50.8mm 38.1mm; margin: 0; }
+                        body { 
+                            margin: 0; 
+                            display: flex; 
+                            flex-direction: column;
+                            align-items: center; 
+                            justify-content: center; 
+                            height: 38.1mm;
+                            width: 50.8mm;
+                            text-align: center;
+                            font-family: sans-serif;
+                        }
+                        img { 
+                            width: 100%; 
+                            max-height: 20mm; 
+                            object-fit: contain;
+                            image-rendering: pixelated;
+                        }
+                        .text {
+                            font-size: 10pt;
+                            font-weight: bold;
+                            margin-top: 2mm;
+                            letter-spacing: 1mm;
+                        }
                     </style>
                 </head>
                 <body>
-                    <h2>Product Barcode</h2>
-                    <div>${barcodeRef.current.innerHTML}</div>
+                    <img src="${barcodeUrl}" onload="window.print(); window.close();" />
+                    <div class="text">${code}</div>
                 </body>
             </html>
         `);
         printWindow.document.close();
-        printWindow.print();
     };
 
-    const downloadPDF = async () => {
-        if (barcodeRef.current) {
-            const canvas = await html2canvas(barcodeRef.current);
-            const imgData = canvas.toDataURL('image/png');
-            const doc = new jsPDF();
-            doc.addImage(imgData, 'PNG', 10, 10, 180, 60);
-            doc.text(`Product SKU: ${code}`, 10, 80);
-            doc.save(`barcode-${code}.pdf`);
-        }
-    };
+    const barcodeUrl = `/admin/product/barcode/generate?code=${code}`;
 
     return (
-        <div className="barcode-container">
-            <div ref={barcodeRef} style={{ padding: '20px', background: 'white' }}>
-                <Barcode value={code} format={format} />
+        <div className="barcode-container p-3 border rounded bg-light text-center">
+            <div className="mb-3">
+                <img
+                    src={barcodeUrl}
+                    alt={code}
+                    className="img-fluid"
+                    style={{ maxHeight: '100px', imageRendering: 'pixelated' }}
+                />
+                <div className="mt-2 font-weight-bold" style={{ letterSpacing: '2px' }}>{code}</div>
             </div>
-            <div className="mt-2">
+            <div className="d-flex justify-content-center gap-2">
                 <button
                     onClick={printBarcode}
-                    className="btn btn-sm btn-primary mr-2"
+                    className="btn btn-primary"
                 >
-                    Print Barcode
-                </button>
-                <button
-                    onClick={downloadPDF}
-                    className="btn btn-sm btn-success"
-                >
-                    Download PDF
+                    <i className="fas fa-print mr-1"></i> Print Barcode
                 </button>
             </div>
         </div>
