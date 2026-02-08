@@ -48,6 +48,8 @@ class ProductController extends Controller
                             ? '<br><del>' . $data->price . '</del>'
                             : '')
                 )
+                ->addColumn('purchase_price', fn($data) => $data->purchase_price)
+
                 ->addColumn('quantity', fn($data) => $data->quantity . ' ' . optional($data->unit)->short_name)
                 ->addColumn('sku', fn($data) => $data->sku ? '<span class="badge bg-info">' . $data->sku . '</span>' : 'N/A')
                 ->addColumn('created_at', fn($data) => $data->created_at->format('d M, Y'))
