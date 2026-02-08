@@ -23,7 +23,8 @@
                 <th data-orderable="false">#</th>
                 <th></th>
                 <th>Name</th>
-                <th>Price{{currency()->symbol??''}}</th>
+                <th>Cherry Price{{currency()->symbol??''}}</th>
+                <th>MRP{{currency()->symbol??''}}</th>
                 <th>Stock</th>
                 <th>SKU</th>
                 <th>Created</th>
@@ -64,10 +65,14 @@
           data: 'name',
           name: 'name'
         },
-        {
-          data: 'price',
-          name: 'price'
-        },
+          {
+            data: 'price',
+            name: 'price'
+          },
+          {
+            data: 'purchase_price',
+            name: 'purchase_price'
+          },
         {
           data: 'quantity',
           name: 'quantity'
