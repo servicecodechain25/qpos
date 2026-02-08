@@ -209,7 +209,11 @@
     <h3 class="card-title">Product Barcode</h3>
   </div>
   <div class="card-body">
-    <div id="product-barcode" data-code="{{ $product->sku }}"></div>
+    <div id="product-barcode" 
+         data-code="{{ $product->sku }}" 
+         data-mrp="{{ $product->purchase_price }}" 
+         data-price="{{ $product->price }}">
+    </div>
   </div>
 </div>
 @endif

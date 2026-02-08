@@ -27,12 +27,15 @@ if (document.getElementById("purchase")) {
 
 // Check for the 'product-barcode' element and render the ProductBarcode component
 if (document.getElementById("product-barcode")) {
-    const barcodeCode = document.getElementById("product-barcode").getAttribute('data-code');
-    const barcodeRoot = createRoot(document.getElementById("product-barcode"));
-    barcodeRoot.render(<ProductBarcode code={barcodeCode} />);
+    const el = document.getElementById("product-barcode");
+    const barcodeCode = el.getAttribute('data-code');
+    const mrp = el.getAttribute('data-mrp');
+    const price = el.getAttribute('data-price');
+    const barcodeRoot = createRoot(el);
+    barcodeRoot.render(<ProductBarcode code={barcodeCode} mrp={mrp} price={price} />);
 }
 
 if (document.getElementById("barcode-bulk-generator")) {
     const barcodeRoot = createRoot(document.getElementById("barcode-bulk-generator"));
-    barcodeRoot.render(<BarcodeBulkGenerate/>);
+    barcodeRoot.render(<BarcodeBulkGenerate />);
 }

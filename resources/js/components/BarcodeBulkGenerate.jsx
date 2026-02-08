@@ -43,6 +43,7 @@ const BarcodeBulkGenerate = () => {
         product_id: productId,
         quantity: quantity,
         sku_id: skuId,
+        mode: printMode,
       })
       .then((res) => {
         const data = Array.isArray(res.data) ? res.data : [];
@@ -103,6 +104,7 @@ const BarcodeBulkGenerate = () => {
         >
           <option value="barcode">Barcode Mode</option>
           <option value="label">Label Mode</option>
+          <option value="text-only">Text-Only Mode</option>
         </select>
 
         <button
@@ -118,25 +120,17 @@ const BarcodeBulkGenerate = () => {
       <div className="barcode-grid no-print">
         {barcodes.map((b, index) => (
           <div key={index} className="barcode-label">
-            {/* <div className="product-name">{b.name}</div> */}
-            {printMode === "barcode" && <img
+            <img
               src={b.img}
               alt={b.value}
               style={{
                 width: "100%",
-                imageRendering: "pixelated"
+                imageRendering: "pixelated",
+                margin: "auto",
+                display: "block"
               }}
               className="barcode-img"
             />
-
-            }
-            <div className="barcode-text">{b.value}</div>
-            {/* {printMode === "label" && ( */}
-            <div className="price-info">
-              <span>MRP: {b.purchase_price}</span>
-              <span>Cherry P: {b.price}</span>
-            </div>
-            {/* )} */}
           </div>
         ))}
       </div>
@@ -144,16 +138,8 @@ const BarcodeBulkGenerate = () => {
       {/* Hidden print-only section for better layout control */}
       <div className={`print-only mode-${printMode}`}>
         {barcodes.map((b, index) => (
-          <div key={index} className={`barcode-label-print `}>
-            {/* <div className="product-name">{b.name}</div>  Uncommented – remove if not needed */}
-            {printMode === "barcode" && <img src={b.img} alt={b.value} />}
-            <div className="barcode-text">{b.value}</div>
-            {/* {printMode === "label" && ( */}
-            <div className="price-info">
-              <span>MRP: {b.purchase_price}</span>
-              <span>Cherry P: {b.price}</span>
-            </div>
-            {/* )} */}
+          <div key={index} className="barcode-label-print">
+            <img src={b.img} alt={b.value} />
           </div>
         ))}
       </div>
@@ -222,6 +208,14 @@ const BarcodeBulkGenerate = () => {
         margin: 0;
       }
       
+      /* Text-only mode uses smaller labels: 0.75" x 2" (19.05mm x 50.8mm) */
+      .mode-text-only {
+        @page {
+          size: 50.8mm 19.05mm;
+          margin: 0;
+        }
+      }
+      
       body {
         margin: 0 !important;
         padding: 0 !important;
@@ -238,16 +232,14 @@ const BarcodeBulkGenerate = () => {
       .print-only {
         display: block !important;
         width: 50.8mm !important;
-        height: 38.1mm !important;
         margin: 0 !important;
         padding: 0 !important;
-        overflow: hidden !important;
       }
 
       .barcode-label-print {
         width: 50.8mm !important;
         height: 38.1mm !important;
-        padding: 2mm 4mm !important;
+        padding: 0.5mm !important;
         box-sizing: border-box !important;
         display: flex !important;
         flex-direction: column !important;
@@ -263,6 +255,11 @@ const BarcodeBulkGenerate = () => {
         page-break-after: auto !important;
         break-after: auto !important;
       }
+      
+      /* Text-only mode labels are narrower */
+      .mode-text-only .barcode-label-print {
+        height: 19.05mm !important;
+      }
 
       .barcode-label-print .product-name {
         font-size: 10pt !important;
@@ -276,11 +273,10 @@ const BarcodeBulkGenerate = () => {
 
       .barcode-label-print img {
         width: 100% !important;
-        height: auto !important;
-        max-height: 18mm !important;
+        height: 100% !important;
+        max-height: 38mm !important;
         object-fit: contain !important;
         display: block !important;
-        margin: 1mm 0 !important;
       }
 
       .barcode-label-print .barcode-text {

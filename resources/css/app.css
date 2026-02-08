@@ -31,7 +31,7 @@
 .barcode-label img {
   width: 100%;
   /* approximate width for 32mm */
-  height: 60px;
+  /* height: 60px; */
   /* approximate height for 15mm */
 }
 
