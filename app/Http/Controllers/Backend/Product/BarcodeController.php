@@ -181,24 +181,47 @@ class BarcodeController extends Controller
         $skuY = 35;
         imagettftext($canvas, $skuFontSize, 0, $skuX, $skuY, $black, $fontPath, $skuText);
         
-        // 2. MRP in the middle
+        
+        // 2. Prices in column layout (same as barcode mode)
+        $labelFontSize = 14;
         $priceFontSize = 20;
-        $mrpText = "MRP: " . $mrp;
-        $mrpBox = imagettfbbox($priceFontSize, 0, $fontPath, $mrpText);
-        $mrpWidth = abs($mrpBox[4] - $mrpBox[0]);
         
-        $mrpX = ($canvasW - $mrpWidth) / 2;
-        $mrpY = $skuY + 50;
-        imagettftext($canvas, $priceFontSize, 0, $mrpX, $mrpY, $black, $fontPath, $mrpText);
+        // Left column: MRP
+        $mrpLabelText = "MRP";
+        $mrpLabelBox = imagettfbbox($labelFontSize, 0, $fontPath, $mrpLabelText);
+        $mrpLabelWidth = abs($mrpLabelBox[4] - $mrpLabelBox[0]);
         
-        // 3. Cherry Price at the bottom
-        $cherryText = "Cherry P: " . $price;
-        $cherryBox = imagettfbbox($priceFontSize, 0, $fontPath, $cherryText);
-        $cherryWidth = abs($cherryBox[4] - $cherryBox[0]);
+        $mrpPriceText = $mrp;
+        $mrpPriceBox = imagettfbbox($priceFontSize, 0, $fontPath, $mrpPriceText);
+        $mrpPriceWidth = abs($mrpPriceBox[4] - $mrpPriceBox[0]);
         
-        $cherryX = ($canvasW - $cherryWidth) / 2;
-        $cherryY = $mrpY + 45;
-        imagettftext($canvas, $priceFontSize, 0, $cherryX, $cherryY, $black, $fontPath, $cherryText);
+        // Position MRP column on left (centered in left half)
+        $leftColumnCenter = $canvasW / 4;
+        $mrpLabelX = $leftColumnCenter - ($mrpLabelWidth / 2);
+        $mrpPriceX = $leftColumnCenter - ($mrpPriceWidth / 2);
+        
+        $labelY = $skuY + 45;
+        $priceY = $labelY + 30;
+        
+        imagettftext($canvas, $labelFontSize, 0, $mrpLabelX, $labelY, $black, $fontPath, $mrpLabelText);
+        imagettftext($canvas, $priceFontSize, 0, $mrpPriceX, $priceY, $black, $fontPath, $mrpPriceText);
+        
+        // Right column: Cherry P
+        $cherryLabelText = "Cherry P";
+        $cherryLabelBox = imagettfbbox($labelFontSize, 0, $fontPath, $cherryLabelText);
+        $cherryLabelWidth = abs($cherryLabelBox[4] - $cherryLabelBox[0]);
+        
+        $cherryPriceText = $price;
+        $cherryPriceBox = imagettfbbox($priceFontSize, 0, $fontPath, $cherryPriceText);
+        $cherryPriceWidth = abs($cherryPriceBox[4] - $cherryPriceBox[0]);
+        
+        // Position Cherry P column on right (centered in right half)
+        $rightColumnCenter = ($canvasW * 3) / 4;
+        $cherryLabelX = $rightColumnCenter - ($cherryLabelWidth / 2);
+        $cherryPriceX = $rightColumnCenter - ($cherryPriceWidth / 2);
+        
+        imagettftext($canvas, $labelFontSize, 0, $cherryLabelX, $labelY, $black, $fontPath, $cherryLabelText);
+        imagettftext($canvas, $priceFontSize, 0, $cherryPriceX, $priceY, $black, $fontPath, $cherryPriceText);
         
         // Output PNG
         ob_start();
