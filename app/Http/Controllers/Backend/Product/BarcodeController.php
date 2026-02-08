@@ -67,7 +67,7 @@ public function generate(Request $request)
         
         // 2. Create Canvas (400px fits perfectly on 2" labels and prevents cropping)
         $canvasW = 400; 
-        $canvasH = 280; 
+        $canvasH = 320; // Increased from 280
         $canvas = imagecreatetruecolor($canvasW, $canvasH);
         
         // Colors
@@ -84,14 +84,14 @@ public function generate(Request $request)
         
         // 4. SKU Text (Centered below barcode)
         $fontPath = base_path('vendor/dompdf/dompdf/lib/fonts/DejaVuSans-Bold.ttf');
-        $skuFontSize = 24; // PT size
+        $skuFontSize = 30; // Increased from 24
         
         $skuText = $code;
         $skuBox = imagettfbbox($skuFontSize, 0, $fontPath, $skuText);
         $skuWidth = abs($skuBox[4] - $skuBox[0]);
         
         $tx = ($canvasW - $skuWidth) / 2;
-        $ty = $by + $bh + 45; 
+        $ty = $by + $bh + 55; // Increased spacing
         imagettftext($canvas, $skuFontSize, 0, $tx, $ty, $black, $fontPath, $skuText);
         
         // 5. Drawing Line (Thickened)
@@ -103,8 +103,8 @@ public function generate(Request $request)
         imageline($canvas, $lx1, $ly + 2, $lx2, $ly + 2, $black);
         
         // 6. Prices (Column layout: labels on top, prices below)
-        $labelFontSize = 16;
-        $priceFontSize = 24;
+        $labelFontSize = 20; // Increased from 16
+        $priceFontSize = 30; // Increased from 24
         
         // Left column: MRP
         $mrpLabelText = "MRP";
@@ -120,8 +120,8 @@ public function generate(Request $request)
         $mrpLabelX = $leftColumnCenter - ($mrpLabelWidth / 2);
         $mrpPriceX = $leftColumnCenter - ($mrpPriceWidth / 2);
         
-        $labelY = $ly + 30;
-        $priceY = $labelY + 35;
+        $labelY = $ly + 40; // Increased spacing
+        $priceY = $labelY + 45; // Increased spacing
         
         imagettftext($canvas, $labelFontSize, 0, $mrpLabelX, $labelY, $black, $fontPath, $mrpLabelText);
         imagettftext($canvas, $priceFontSize, 0, $mrpPriceX, $priceY, $black, $fontPath, $mrpPriceText);
