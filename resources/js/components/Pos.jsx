@@ -140,6 +140,8 @@ export default function Pos() {
             .post("/admin/cart", { id })
             .then((res) => {
                 setCartUpdated(!cartUpdated);
+                setSearchBarcode("");
+                setSearchQuery("");
                 playSound(SuccessSound);
                 toast.success(res?.data?.message);
             })

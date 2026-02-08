@@ -14,35 +14,41 @@ class BarcodeController extends Controller
     public function bulkGenerate(Request $request)
     {
         $request->validate([
-            'product_id' => 'required|integer',
+            'product_ids' => 'required|array',
+            'product_ids.*' => 'integer|exists:products,id',
             'quantity' => 'required|integer|min:1',
         ]);
 
-        $product = Product::findOrFail($request->product_id);
+        $productIds = $request->product_ids;
         $qty = $request->quantity;
         $mode = $request->input('mode', 'barcode'); // Default to barcode mode
 
         $barcodes = [];
 
-        for ($i = 1; $i <= $qty; $i++) {
-            $code = $product->sku;
-            
-            // Determine which route to use based on mode
-            $routeName = $mode === 'text-only' 
-                ? 'backend.admin.barcode.generate-text-only' 
-                : 'backend.admin.barcode.generate';
+        foreach ($productIds as $id) {
+            $product = Product::find($id);
+            if (!$product) continue;
 
-            $barcodes[] = [
-                'value' => $code,
-                'name' => $product->name,
-                'price' => $product->price,
-                'purchase_price' => $product->purchase_price,
-                'img' => route($routeName, [
-                    'code' => $code,
-                    'mrp' => $product->purchase_price,
-                    'price' => $product->price
-                ]),
-            ];
+            for ($i = 1; $i <= $qty; $i++) {
+                $code = $product->sku;
+                
+                // Determine which route to use based on mode
+                $routeName = $mode === 'text-only' 
+                    ? 'backend.admin.barcode.generate-text-only' 
+                    : 'backend.admin.barcode.generate';
+
+                $barcodes[] = [
+                    'value' => $code,
+                    'name' => $product->name,
+                    'price' => $product->price,
+                    'purchase_price' => $product->purchase_price,
+                    'img' => route($routeName, [
+                        'code' => $code,
+                        'mrp' => $product->purchase_price,
+                        'price' => $product->price
+                    ]),
+                ];
+            }
         }
 
         return response()->json($barcodes);

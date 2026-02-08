@@ -1,29 +1,35 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import Select from "react-select";
 
 const BarcodeBulkGenerate = () => {
   const [products, setProducts] = useState([]);
-  const [productId, setProductId] = useState("");
-  const [skuId, setSkuId] = useState("");
+  const [productIds, setProductIds] = useState([]);
   const [quantity, setQuantity] = useState(1);
   const [barcodes, setBarcodes] = useState([]);
   const [loading, setLoading] = useState(false);
   const [printMode, setPrintMode] = useState("barcode"); // 'barcode' or 'label'
 
-  const handleProductChange = (e) => {
-    setProductId(e.target.value);
-    setSkuId(e.target.value);
+  const handleProductChange = (selectedOptions) => {
+    const values = selectedOptions ? selectedOptions.map(opt => opt.value) : [];
+    setProductIds(values);
+  };
+
+  const selectAll = () => {
+    setProductIds(products.map(p => p.id));
+  };
+
+  const clearAll = () => {
+    setProductIds([]);
   };
 
   useEffect(() => {
     axios
       .get("/admin/get/products")
       .then((res) => {
-
         const productList = Array.isArray(res.data)
           ? res.data
           : res.data?.data || [];
-
         setProducts(productList);
       })
       .catch(() => {
@@ -31,18 +37,21 @@ const BarcodeBulkGenerate = () => {
       });
   }, []);
 
+  const productOptions = products.map((p) => ({
+    value: p.id,
+    label: p.name,
+  }));
 
   const generateBarcodes = () => {
-    if (!productId || quantity < 1) return;
+    if (productIds.length === 0 || quantity < 1) return;
 
     setLoading(true);
     setBarcodes([]);
 
     axios
       .post("/admin/product/barcode/bulkGenerate", {
-        product_id: productId,
+        product_ids: productIds,
         quantity: quantity,
-        sku_id: skuId,
         mode: printMode,
       })
       .then((res) => {
@@ -56,51 +65,68 @@ const BarcodeBulkGenerate = () => {
       .finally(() => setLoading(false));
   };
 
-
   return (
     <div className="container">
       <h2 className="no-print">Bulk Barcode Generator</h2>
 
-      <div style={{ display: "flex", gap: "10px", marginBottom: "20px", alignItems: "center" }} className="no-print">
+      <div style={{ display: "flex", gap: "10px", marginBottom: "20px", alignItems: "center", flexWrap: "wrap" }} className="no-print">
         {products.length === 0 && (
           <p style={{ color: "red" }}>
             No products found. Please add products first.
           </p>
         )}
 
-        {!loading && productId && barcodes.length === 0 && (
-          <p>No barcodes generated.</p>
+        {!loading && productIds.length > 0 && barcodes.length === 0 && (
+          <p>Click Generate to create labels.</p>
         )}
 
-        <select
-          value={productId}
-          onChange={(e) => handleProductChange(e)}
-          className="form-control"
-          style={{ width: "200px" }}
-        >
-          <option value="">Select product</option>
-          {products.map((p) => (
-            <option key={p.id} value={p.id}>
-              {p.name}
-            </option>
-          ))}
-        </select>
+        <div style={{ width: "400px" }}>
+          <Select
+            options={productOptions}
+            onChange={handleProductChange}
+            placeholder="Search and select products..."
+            isClearable
+            isMulti
+            isDisabled={loading || products.length === 0}
+            value={productOptions.filter(opt => productIds.includes(opt.value))}
+          />
+        </div>
 
-        <input
-          type="number"
-          min="1"
-          max="1000"
-          value={quantity}
-          onChange={(e) => setQuantity(Math.max(1, Number(e.target.value)))}
-          className="form-control"
-          style={{ width: "80px" }}
-        />
+        <div className="btn-group">
+          <button
+            onClick={selectAll}
+            className="btn btn-outline-secondary btn-sm"
+            disabled={loading || products.length === 0}
+          >
+            Select All
+          </button>
+          <button
+            onClick={clearAll}
+            className="btn btn-outline-secondary btn-sm"
+            disabled={loading || productIds.length === 0}
+          >
+            Clear
+          </button>
+        </div>
+
+        <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+          <label className="mb-0 small">Qty/Product:</label>
+          <input
+            type="number"
+            min="1"
+            max="1000"
+            value={quantity}
+            onChange={(e) => setQuantity(Math.max(1, Number(e.target.value)))}
+            className="form-control"
+            style={{ width: "80px", height: "38px" }}
+          />
+        </div>
 
         <select
           value={printMode}
           onChange={(e) => setPrintMode(e.target.value)}
           className="form-control"
-          style={{ width: "150px" }}
+          style={{ width: "150px", height: "38px" }}
         >
           <option value="barcode">Barcode Mode</option>
           <option value="label">Label Mode</option>
@@ -110,11 +136,11 @@ const BarcodeBulkGenerate = () => {
         <button
           onClick={generateBarcodes}
           className="btn btn-primary"
-          disabled={loading || products.length === 0 || !productId}
+          style={{ height: "38px" }}
+          disabled={loading || products.length === 0 || productIds.length === 0}
         >
-          {loading ? "Generating..." : "Generate"}
+          {loading ? "Generating..." : `Generate (${productIds.length})`}
         </button>
-
       </div>
 
       <div className="barcode-grid no-print">

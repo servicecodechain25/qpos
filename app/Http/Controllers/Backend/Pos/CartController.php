@@ -45,7 +45,9 @@ class CartController extends Controller
         $products->when($request->barcode, function ($query, $barcode) {
             $query->where('sku', $barcode);
         });
-        $products = $products->latest()->paginate(96);
+        // $products = $products->latest()->paginate(96);
+        $products = $products->latest()->get();
+
         if (request()->wantsJson()) {
             return ProductResource::collection($products);
         }
