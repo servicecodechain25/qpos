@@ -138,9 +138,7 @@ const BarcodeBulkGenerate = () => {
       {/* Hidden print-only section for better layout control */}
       <div className={`print-only mode-${printMode}`}>
         {barcodes.map((b, index) => (
-          <div key={index} className="barcode-label-print">
-            <img src={b.img} alt={b.value} />
-          </div>
+          <div key={index} className="barcode-label-print"><img src={b.img} alt={b.value} /></div>
         ))}
       </div>
 
@@ -150,7 +148,7 @@ const BarcodeBulkGenerate = () => {
             🖨️ Print Barcodes
           </button>
           <p className="text-muted small mt-2 mb-0">
-            Thermal printer: set paper size to <strong>1.5" × 2"</strong> and turn off <strong>Headers and footers</strong> in the print dialog so only labels print.
+            Thermal printer: set paper size to <strong>{printMode === 'text-only' ? '2" × 0.75"' : '2" × 1.5"'}</strong> and turn off <strong>Headers and footers</strong> in the print dialog.
           </p>
         </div>
       )}
@@ -203,22 +201,11 @@ const BarcodeBulkGenerate = () => {
     }
 
     @media print {
-      @page {
-        size: 50.8mm 38.1mm;
-        margin: 0;
-      }
-      
-      /* Text-only mode uses smaller labels: 0.75" x 2" (19.05mm x 50.8mm) */
-      .mode-text-only {
-        @page {
-          size: 50.8mm 19.05mm;
-          margin: 0;
-        }
-      }
-      
-      body {
+      html, body {
+        height: auto !important;
         margin: 0 !important;
         padding: 0 !important;
+        background: #fff !important;
       }
 
       .no-print, 
@@ -227,28 +214,31 @@ const BarcodeBulkGenerate = () => {
       .main-header, 
       .content-header {
         display: none !important;
+        height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
       }
       
       .print-only {
         display: block !important;
-        width: 50.8mm !important;
+        width: 100% !important;
         margin: 0 !important;
         padding: 0 !important;
       }
 
       .barcode-label-print {
-        width: 50.8mm !important;
-        height: 38.1mm !important;
-        padding: 0.5mm !important;
-        box-sizing: border-box !important;
         display: flex !important;
         flex-direction: column !important;
         align-items: center !important;
         justify-content: center !important;
-        text-align: center !important;
+        width: 100% !important;
+        height: ${printMode === 'text-only' ? '19.0mm' : '38.0mm'} !important;
+        padding: 0 !important;
+        margin: 0 !important;
         page-break-after: always !important;
         break-after: page !important;
         overflow: hidden !important;
+        box-sizing: border-box !important;
       }
 
       .barcode-label-print:last-child {
@@ -256,45 +246,12 @@ const BarcodeBulkGenerate = () => {
         break-after: auto !important;
       }
       
-      /* Text-only mode labels are narrower */
-      .mode-text-only .barcode-label-print {
-        height: 19.05mm !important;
-      }
-
-      .barcode-label-print .product-name {
-        font-size: 10pt !important;
-        font-weight: bold !important;
-        margin: 0 0 1mm 0 !important;
-        width: 100% !important;
-        white-space: nowrap !important;
-        overflow: hidden !important;
-        text-overflow: ellipsis !important;
-      }
-
       .barcode-label-print img {
         width: 100% !important;
         height: 100% !important;
-        max-height: 38mm !important;
-        object-fit: contain !important;
         display: block !important;
-      }
-
-      .barcode-label-print .barcode-text {
-        font-size: 9pt !important;
-        margin: 1mm 0 !important;
-        letter-spacing: 1mm !important;
-        font-weight: bold !important;
-      }
-
-      .barcode-label-print .price-info {
-        font-size: 9pt !important;
-        width: 100% !important;
-        border-top: 1px solid #000 !important;
-        padding-top: 1mm !important;
-        margin-top: 1mm !important;
-        display: flex !important;
-        justify-content: space-between !important;
-        font-weight: bold !important;
+        object-fit: contain !important;
+        image-rendering: pixelated !important;
       }
     }
   `
