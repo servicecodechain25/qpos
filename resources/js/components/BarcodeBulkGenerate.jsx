@@ -284,13 +284,13 @@ const BarcodeBulkGenerate = () => {
       
       /* Text-only mode labels are narrower */
       .mode-text-only .barcode-label-print {
-        height: 12.7mm !important;
+        height: 18.7mm !important;
       }
 
       .barcode-label-print .product-name {
         font-size: 10pt !important;
         font-weight: bold !important;
-        margin: 0 0 1mm 0 !important;
+        margin: 0 0 2mm 0 !important;
         width: 100% !important;
         white-space: nowrap !important;
         overflow: hidden !important;
@@ -308,7 +308,7 @@ const BarcodeBulkGenerate = () => {
       .barcode-label-print .barcode-text {
         font-size: 9pt !important;
         margin: 1mm 0 !important;
-        letter-spacing: 1mm !important;
+        letter-spacing: 2mm !important;
         font-weight: bold !important;
       }
 
@@ -316,8 +316,8 @@ const BarcodeBulkGenerate = () => {
         font-size: 9pt !important;
         width: 100% !important;
         border-top: 1px solid #000 !important;
-        padding-top: 1mm !important;
-        margin-top: 1mm !important;
+        padding-top: 1.5mm !important;
+        margin-top: 2mm !important;
         display: flex !important;
         justify-content: space-between !important;
         font-weight: bold !important;

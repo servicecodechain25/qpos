@@ -159,83 +159,131 @@ public function generate(Request $request)
     }
 
 
-    public function generateTextOnly(Request $request)
+   public function generateTextOnly(Request $request)
     {
-        $code = $request->query('code', '000000');
-        $mrp = $request->query('mrp', '0.00');
+        $code  = $request->query('code', '000000');
+        $mrp   = $request->query('mrp', '0.00');
         $price = $request->query('price', '0.00');
-        
-        // Create Canvas for 0.5" x 2" label (4:1 aspect ratio)
-        // 800x200 provides high resolution for thermal printers
-        $canvasW = 800; 
-        $canvasH = 200; 
+
+        // Canvas: 0.5" x 2" (4:1 aspect ratio)
+        $canvasW = 800;
+        $canvasH = 240;
         $canvas = imagecreatetruecolor($canvasW, $canvasH);
-        
+
         // Colors
         $white = imagecolorallocate($canvas, 255, 255, 255);
         $black = imagecolorallocate($canvas, 0, 0, 0);
-        
         imagefill($canvas, 0, 0, $white);
-        
-        // Font setup
+
+        // Font
         $fontPath = base_path('vendor/dompdf/dompdf/lib/fonts/DejaVuSans-Bold.ttf');
-        
-        // 1. SKU at the top center
-        $skuFontSize = 35; 
+
+        /*
+        |--------------------------------------------------------------------------
+        | 1. SKU (Top Center)
+        |--------------------------------------------------------------------------
+        */
+        $skuFontSize = 45;
         $skuText = $code;
+
         $skuBox = imagettfbbox($skuFontSize, 0, $fontPath, $skuText);
-        $skuWidth = abs($skuBox[4] - $skuBox[0]);
-        
+        $skuWidth  = abs($skuBox[4] - $skuBox[0]);
+        $skuHeight = abs($skuBox[5] - $skuBox[1]);
+
         $skuX = ($canvasW - $skuWidth) / 2;
-        $skuY = 60; 
+        $skuY = 65;
+
         imagettftext($canvas, $skuFontSize, 0, $skuX, $skuY, $black, $fontPath, $skuText);
-        
-        // 2. Prices side-by-side below center
-        $labelFontSize = 22; 
-        $priceFontSize = 38; 
-        
-        // Left column: MRP
-        $mrpLabelText = "MRP";
-        $mrpLabelBox = imagettfbbox($labelFontSize, 0, $fontPath, $mrpLabelText);
-        $mrpLabelWidth = abs($mrpLabelBox[4] - $mrpLabelBox[0]);
-        
+
+        // SKU bottom margin
+        $skuMarginBottom = 25;
+
+        // Start Y for prices section
+        $contentStartY = $skuY + $skuHeight + $skuMarginBottom;
+
+        /*
+        |--------------------------------------------------------------------------
+        | 2. Prices Section
+        |--------------------------------------------------------------------------
+        */
+        $labelFontSize = 32;
+        $priceFontSize = 45;
+
+        // Bottom margin for price text
+        $priceBottomMargin = 35;
+
+        // Label Y
+        $labelY = $contentStartY;
+
+        // Measure price height (for descenders like 9, 4)
+        $priceBoxSample = imagettfbbox($priceFontSize, 0, $fontPath, '9999');
+        $priceHeight = abs($priceBoxSample[5] - $priceBoxSample[1]);
+
+        // Desired spacing under label
+        $desiredPriceY = $labelY + 60;
+
+        // Clamp price baseline so text + margin stay inside canvas
+        $priceY = min(
+            $desiredPriceY,
+            $canvasH - $priceBottomMargin
+        );
+
+        /*
+        |--------------------------------------------------------------------------
+        | Left Column — MRP
+        |--------------------------------------------------------------------------
+        */
+        $mrpLabelText = 'MRP';
         $mrpPriceText = $mrp;
+
+        $mrpLabelBox = imagettfbbox($labelFontSize, 0, $fontPath, $mrpLabelText);
         $mrpPriceBox = imagettfbbox($priceFontSize, 0, $fontPath, $mrpPriceText);
+
+        $mrpLabelWidth = abs($mrpLabelBox[4] - $mrpLabelBox[0]);
         $mrpPriceWidth = abs($mrpPriceBox[4] - $mrpPriceBox[0]);
-        
-        // Midpoint for side-by-side layout
+
         $leftColumnCenter = $canvasW / 4;
+
         $mrpLabelX = $leftColumnCenter - ($mrpLabelWidth / 2);
         $mrpPriceX = $leftColumnCenter - ($mrpPriceWidth / 2);
-        
-        $labelY = $skuY + 55; 
-        $priceY = $labelY + 55; 
-        
+
         imagettftext($canvas, $labelFontSize, 0, $mrpLabelX, $labelY, $black, $fontPath, $mrpLabelText);
         imagettftext($canvas, $priceFontSize, 0, $mrpPriceX, $priceY, $black, $fontPath, $mrpPriceText);
-        
-        // Right column: Cherry P
-        $cherryLabelText = "Cherry P";
-        $cherryLabelBox = imagettfbbox($labelFontSize, 0, $fontPath, $cherryLabelText);
-        $cherryLabelWidth = abs($cherryLabelBox[4] - $cherryLabelBox[0]);
-        
+
+        /*
+        |--------------------------------------------------------------------------
+        | Right Column — Cherry P
+        |--------------------------------------------------------------------------
+        */
+        $cherryLabelText = 'Cherry P';
         $cherryPriceText = $price;
+
+        $cherryLabelBox = imagettfbbox($labelFontSize, 0, $fontPath, $cherryLabelText);
         $cherryPriceBox = imagettfbbox($priceFontSize, 0, $fontPath, $cherryPriceText);
+
+        $cherryLabelWidth = abs($cherryLabelBox[4] - $cherryLabelBox[0]);
         $cherryPriceWidth = abs($cherryPriceBox[4] - $cherryPriceBox[0]);
-        
+
         $rightColumnCenter = ($canvasW * 3) / 4;
+
         $cherryLabelX = $rightColumnCenter - ($cherryLabelWidth / 2);
         $cherryPriceX = $rightColumnCenter - ($cherryPriceWidth / 2);
-        
+
         imagettftext($canvas, $labelFontSize, 0, $cherryLabelX, $labelY, $black, $fontPath, $cherryLabelText);
         imagettftext($canvas, $priceFontSize, 0, $cherryPriceX, $priceY, $black, $fontPath, $cherryPriceText);
-        
-        // Output PNG
+
+        /*
+        |--------------------------------------------------------------------------
+        | Output
+        |--------------------------------------------------------------------------
+        */
         ob_start();
         imagepng($canvas);
         $finalImage = ob_get_clean();
         imagedestroy($canvas);
-        
+
         return response($finalImage)->header('Content-Type', 'image/png');
     }
+
+
 }
