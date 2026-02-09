@@ -27,7 +27,8 @@ class DashboardController extends Controller
             'due' => $orders->sum('due'),
             'total_customer' => Customer::count(),
             'total_order' => $orders->count(),
-            'total_product' => Product::count(),
+            // 'total_product' => Product::active()->stocked()->sum('quantity'),
+            'total_product' => Product::sum('quantity'),
             'total_sale_item' => OrderProduct::sum('quantity'),
         ];
 

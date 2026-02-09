@@ -165,9 +165,10 @@ public function generate(Request $request)
         $mrp = $request->query('mrp', '0.00');
         $price = $request->query('price', '0.00');
         
-        // Create Canvas for 0.75" x 2" label
-        $canvasW = 400; 
-        $canvasH = 200; // Increased from 150
+        // Create Canvas for 0.5" x 2" label (4:1 aspect ratio)
+        // 800x200 provides high resolution for thermal printers
+        $canvasW = 800; 
+        $canvasH = 200; 
         $canvas = imagecreatetruecolor($canvasW, $canvasH);
         
         // Colors
@@ -179,19 +180,19 @@ public function generate(Request $request)
         // Font setup
         $fontPath = base_path('vendor/dompdf/dompdf/lib/fonts/DejaVuSans-Bold.ttf');
         
-        // 1. SKU at the top (Large font)
-        $skuFontSize = 30; // Increased from 24
+        // 1. SKU at the top center
+        $skuFontSize = 35; 
         $skuText = $code;
         $skuBox = imagettfbbox($skuFontSize, 0, $fontPath, $skuText);
         $skuWidth = abs($skuBox[4] - $skuBox[0]);
         
         $skuX = ($canvasW - $skuWidth) / 2;
-        $skuY = 55; // Adjusted
+        $skuY = 60; 
         imagettftext($canvas, $skuFontSize, 0, $skuX, $skuY, $black, $fontPath, $skuText);
         
-        // 2. Prices in column layout
-        $labelFontSize = 20; // Increased from 14
-        $priceFontSize = 30; // Increased from 20
+        // 2. Prices side-by-side below center
+        $labelFontSize = 22; 
+        $priceFontSize = 38; 
         
         // Left column: MRP
         $mrpLabelText = "MRP";
@@ -202,13 +203,13 @@ public function generate(Request $request)
         $mrpPriceBox = imagettfbbox($priceFontSize, 0, $fontPath, $mrpPriceText);
         $mrpPriceWidth = abs($mrpPriceBox[4] - $mrpPriceBox[0]);
         
-        // Position MRP column on left
+        // Midpoint for side-by-side layout
         $leftColumnCenter = $canvasW / 4;
         $mrpLabelX = $leftColumnCenter - ($mrpLabelWidth / 2);
         $mrpPriceX = $leftColumnCenter - ($mrpPriceWidth / 2);
         
-        $labelY = $skuY + 60; // Adjusted
-        $priceY = $labelY + 50; // Adjusted
+        $labelY = $skuY + 55; 
+        $priceY = $labelY + 55; 
         
         imagettftext($canvas, $labelFontSize, 0, $mrpLabelX, $labelY, $black, $fontPath, $mrpLabelText);
         imagettftext($canvas, $priceFontSize, 0, $mrpPriceX, $priceY, $black, $fontPath, $mrpPriceText);
@@ -222,7 +223,6 @@ public function generate(Request $request)
         $cherryPriceBox = imagettfbbox($priceFontSize, 0, $fontPath, $cherryPriceText);
         $cherryPriceWidth = abs($cherryPriceBox[4] - $cherryPriceBox[0]);
         
-        // Position Cherry P column on right
         $rightColumnCenter = ($canvasW * 3) / 4;
         $cherryLabelX = $rightColumnCenter - ($cherryLabelWidth / 2);
         $cherryPriceX = $rightColumnCenter - ($cherryPriceWidth / 2);

@@ -129,7 +129,7 @@ const BarcodeBulkGenerate = () => {
           style={{ width: "150px", height: "38px" }}
         >
           <option value="barcode">Barcode Mode</option>
-          <option value="label">Label Mode</option>
+          {/* <option value="label">Label Mode</option> */}
           <option value="text-only">Text-Only Mode</option>
         </select>
 
@@ -176,7 +176,7 @@ const BarcodeBulkGenerate = () => {
             🖨️ Print Barcodes
           </button>
           <p className="text-muted small mt-2 mb-0">
-            Thermal printer: set paper size to <strong>1.5" × 2"</strong> and turn off <strong>Headers and footers</strong> in the print dialog so only labels print.
+            Thermal printer: set paper size to <strong>{printMode === 'text-only' ? '2" × 0.5"' : '2" × 1.5"'}</strong> and turn off <strong>Headers and footers</strong> in the print dialog.
           </p>
         </div>
       )}
@@ -234,10 +234,10 @@ const BarcodeBulkGenerate = () => {
         margin: 0;
       }
       
-      /* Text-only mode uses smaller labels: 0.75" x 2" (19.05mm x 50.8mm) */
+      /* Text-only mode uses smaller labels: 0.5" x 2" (12.7mm x 50.8mm) */
       .mode-text-only {
         @page {
-          size: 50.8mm 19.05mm;
+          size: 50.8mm 12.7mm;
           margin: 0;
         }
       }
@@ -284,7 +284,7 @@ const BarcodeBulkGenerate = () => {
       
       /* Text-only mode labels are narrower */
       .mode-text-only .barcode-label-print {
-        height: 19.05mm !important;
+        height: 12.7mm !important;
       }
 
       .barcode-label-print .product-name {
