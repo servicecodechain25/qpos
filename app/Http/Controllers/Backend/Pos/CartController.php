@@ -43,7 +43,7 @@ class CartController extends Controller
 
         // Search by barcode if provided
         $products->when($request->barcode, function ($query, $barcode) {
-            $query->where('sku', "%M-3-Antique%");
+            $query->where('sku', "%{$barcode}%");
         });
         $products = $products->latest()->paginate(100);
         // $products = $products->latest()->get();

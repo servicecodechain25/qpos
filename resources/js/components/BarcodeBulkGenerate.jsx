@@ -9,6 +9,29 @@ const BarcodeBulkGenerate = () => {
   const [barcodes, setBarcodes] = useState([]);
   const [loading, setLoading] = useState(false);
   const [printMode, setPrintMode] = useState("barcode"); // 'barcode' or 'label'
+  const [paperSize, setPaperSize] = useState("thermal-2x1");
+  const [customWidth, setCustomWidth] = useState(50.8);
+  const [customHeight, setCustomHeight] = useState(38.1);
+
+  // Paper size options
+  const paperSizeOptions = [
+    { value: "24-per-sheet", label: "24 per sheet (a4) (2.48 * 1.334)", width: 63.0, height: 33.9 },
+    { value: "20-per-sheet", label: "20 per sheet (4 * 1)", width: 101.6, height: 25.4 },
+    { value: "18-per-sheet", label: "18 per sheet (a4) (2.5 * 1.835)", width: 63.5, height: 46.6 },
+    { value: "14-per-sheet", label: "14 per sheet (4 * 1.33)", width: 101.6, height: 33.8 },
+    { value: "12-per-sheet", label: "12 per sheet (a4) (2.5 * 2.834)", width: 63.5, height: 72.0 },
+    { value: "10-per-sheet", label: "10 per sheet (4 * 2)", width: 101.6, height: 50.8 },
+    { value: "thermal-2x1", label: "Thermal Label (2x1 inch)", width: 50.8, height: 25.4 },
+    { value: "custom", label: "Custom Size", width: 0, height: 0 }
+  ];
+
+  const getSelectedPaperSize = () => {
+    const selected = paperSizeOptions.find(opt => opt.value === paperSize);
+    if (paperSize === "custom") {
+      return { width: customWidth, height: customHeight };
+    }
+    return selected || paperSizeOptions[6]; // default to thermal-2x1
+  };
 
   const handleProductChange = (selectedOptions) => {
     const values = selectedOptions ? selectedOptions.map(opt => opt.value) : [];
@@ -133,6 +156,48 @@ const BarcodeBulkGenerate = () => {
           <option value="text-only">Text-Only Mode</option>
         </select>
 
+        <select
+          value={paperSize}
+          onChange={(e) => setPaperSize(e.target.value)}
+          className="form-control"
+          style={{ width: "250px", height: "38px" }}
+        >
+          {paperSizeOptions.map(opt => (
+            <option key={opt.value} value={opt.value}>{opt.label}</option>
+          ))}
+        </select>
+
+        {paperSize === "custom" && (
+          <>
+            <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+              <label className="mb-0 small">Width (mm):</label>
+              <input
+                type="number"
+                min="10"
+                max="300"
+                step="0.1"
+                value={customWidth}
+                onChange={(e) => setCustomWidth(parseFloat(e.target.value) || 50.8)}
+                className="form-control"
+                style={{ width: "80px", height: "38px" }}
+              />
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+              <label className="mb-0 small">Height (mm):</label>
+              <input
+                type="number"
+                min="10"
+                max="300"
+                step="0.1"
+                value={customHeight}
+                onChange={(e) => setCustomHeight(parseFloat(e.target.value) || 38.1)}
+                className="form-control"
+                style={{ width: "80px", height: "38px" }}
+              />
+            </div>
+          </>
+        )}
+
         <button
           onClick={generateBarcodes}
           className="btn btn-primary"
@@ -176,13 +241,20 @@ const BarcodeBulkGenerate = () => {
             🖨️ Print Barcodes
           </button>
           <p className="text-muted small mt-2 mb-0">
-            Thermal printer: set paper size to <strong>{printMode === 'text-only' ? '2" × 0.5"' : '2" × 1.5"'}</strong> and turn off <strong>Headers and footers</strong> in the print dialog.
+            {(() => {
+              const size = getSelectedPaperSize();
+              const widthInch = (size.width / 25.4).toFixed(2);
+              const heightInch = (size.height / 25.4).toFixed(2);
+              return `Thermal printer: set paper size to ${widthInch}" × ${heightInch}" (${size.width}mm × ${size.height}mm) and turn off Headers and footers in the print dialog.`;
+            })()}
           </p>
         </div>
       )}
 
       <style dangerouslySetInnerHTML={{
-        __html: `
+        __html: (() => {
+          const size = getSelectedPaperSize();
+          return `
     /* === Screen preview styles === */
     .barcode-grid {
       display: grid;
@@ -230,16 +302,8 @@ const BarcodeBulkGenerate = () => {
 
     @media print {
       @page {
-        size: 50.8mm 38.1mm;
+        size: ${size.width}mm ${size.height}mm;
         margin: 0;
-      }
-      
-      /* Text-only mode uses smaller labels: 0.5" x 2" (12.7mm x 50.8mm) */
-      .mode-text-only {
-        @page {
-          size: 50.8mm 12.7mm;
-          margin: 0;
-        }
       }
       
       body {
@@ -257,14 +321,14 @@ const BarcodeBulkGenerate = () => {
       
       .print-only {
         display: block !important;
-        width: 50.8mm !important;
+        width: ${size.width}mm !important;
         margin: 0 !important;
         padding: 0 !important;
       }
 
       .barcode-label-print {
-        width: 50.8mm !important;
-        height: 38.1mm !important;
+        width: ${size.width}mm !important;
+        height: ${size.height}mm !important;
         padding: 0.5mm !important;
         box-sizing: border-box !important;
         display: flex !important;
@@ -281,11 +345,6 @@ const BarcodeBulkGenerate = () => {
         page-break-after: auto !important;
         break-after: auto !important;
       }
-      
-      /* Text-only mode labels are narrower */
-      .mode-text-only .barcode-label-print {
-        height: 18.7mm !important;
-      }
 
       .barcode-label-print .product-name {
         font-size: 10pt !important;
@@ -300,7 +359,7 @@ const BarcodeBulkGenerate = () => {
       .barcode-label-print img {
         width: 100% !important;
         height: 100% !important;
-        max-height: 38mm !important;
+        max-height: ${size.height - 5}mm !important;
         object-fit: contain !important;
         display: block !important;
       }
@@ -323,7 +382,8 @@ const BarcodeBulkGenerate = () => {
         font-weight: bold !important;
       }
     }
-  `
+  `;
+        })()
       }} />
 
     </div>
