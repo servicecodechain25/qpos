@@ -14,7 +14,7 @@ class CartController extends Controller
     {
         if ($request->wantsJson()) {
             $cartItems = PosCart::where('user_id', auth()->id())
-                ->with('product')
+                ->with(['product.unit', 'product.color', 'product.size'])
                 ->latest('created_at')
                 ->get()
                 ->map(function ($item) {
@@ -45,7 +45,7 @@ class CartController extends Controller
         $products->when($request->barcode, function ($query, $barcode) {
             $query->where('sku', "%{$barcode}%");
         });
-        $products = $products->latest()->paginate(100);
+        $products = $products->with(['unit', 'color', 'size'])->latest()->paginate(100);
         // $products = $products->latest()->get();
 
         if (request()->wantsJson()) {
@@ -63,7 +63,7 @@ class CartController extends Controller
         $product_id = $request->id;
 
         // Fetch the product
-        $product = Product::find($product_id);
+        $product = Product::findOrFail($product_id);
 
         // Check if the product is active and has sufficient stock
         if (!$product->status) {
@@ -74,27 +74,25 @@ class CartController extends Controller
             return response()->json(['message' => 'Insufficient stock available'], 400);
         }
 
-        // Fetch the cart item for the current user and product
-        $cartItem = PosCart::where('user_id', auth()->id())->where('product_id', $product_id)->first();
+        // Use updateOrCreate to handle both create and update logic
+        $cartItem = PosCart::where('user_id', auth()->id())
+            ->where('product_id', $product_id)
+            ->first();
 
         if ($cartItem) {
-            // If the product is already in the cart, increment the quantity
             if ($cartItem->quantity < $product->quantity) {
-                $cartItem->quantity += 1;
-                $cartItem->save();
-                return response()->json(['message' => 'Quantity updated', 'quantity' => $cartItem->quantity], 200);
-            } else {
-                return response()->json(['message' => 'Cannot add more, stock limit reached'], 400);
+                 $cartItem->increment('quantity');
+                 return response()->json(['message' => 'Quantity updated', 'quantity' => $cartItem->quantity], 200);
             }
-        } else {
-            // If not in the cart, create a new cart item
-            $cart = new PosCart();
-            $cart->user_id = auth()->id();
-            $cart->product_id = $product_id;
-            $cart->quantity = 1;
-            $cart->save();
-            return response()->json(['message' => 'Product added to cart', 'quantity' => 1], 201);
+             return response()->json(['message' => 'Cannot add more, stock limit reached'], 400);
         }
+
+        PosCart::create([
+            'user_id' => auth()->id(),
+            'product_id' => $product_id,
+            'quantity' => 1
+        ]);
+        return response()->json(['message' => 'Product added to cart', 'quantity' => 1], 201);
     }
 
     public function increment(Request $request)
