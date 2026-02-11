@@ -58,6 +58,7 @@ export default function Pos() {
             const productsData = res.data;
             setProducts(productsData.data);
             setTotalPages(productsData.meta.last_page); // Get total pages
+            setCurrentPage(1); // Reset page
         } catch (error) {
             console.error("Error fetching products:", error);
         }
@@ -100,13 +101,21 @@ export default function Pos() {
         setUpdateTotal(updatedTotalAmount?.toFixed(2));
         setDue(dueAmount?.toFixed(2));
     }, [orderDiscount, paid, total]);
+
+    // Search Query Effect
     useEffect(() => {
-        if (searchQuery) {
-            setProducts([]);
+        setProducts([]);
+        setCurrentPage(1);
+        getProducts(searchQuery, 1, "");
+        setSearchBarcode("");
+    }, [searchQuery]);
+
+    // Pagination Effect
+    useEffect(() => {
+        if (currentPage > 1) {
             getProducts(searchQuery, currentPage, "");
         }
-        setSearchBarcode("");
-    }, [currentPage, searchQuery]);
+    }, [currentPage]);
 
     useEffect(() => {
         if (searchBarcode) {
