@@ -108,14 +108,14 @@
               @endforeach
             </select>
           </div>
-          <!-- <div class="mb-3 col-md-6">
-          <label for="quantity" class="form-label">
-            Initial Stock
-            <span class="text-danger">*</span>
-          </label>
-          <input type="number" class="form-control" placeholder="Enter quantity" name="quantity"
-            value="{{ old('quantity',$product->quantity) }}" required>
-        </div> -->
+          <div class="mb-3 col-md-6">
+            <label for="quantity" class="form-label">
+              Initial Stock
+              <span class="text-danger">*</span>
+            </label>
+            <input type="number" class="form-control" placeholder="Enter quantity" name="quantity"
+              value="{{ old('quantity',$product->quantity) }}" required>
+          </div>
           <div class="mb-3 col-md-6">
             <label for="discount_type" class="form-label">
               Discount Type

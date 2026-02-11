@@ -64,14 +64,14 @@
             <input type="number" step="0.01" min="0" class="form-control"
               placeholder="Enter price" name="price" value="{{ old('price') }}">
           </div>
-          <!-- <div class="mb-3 col-md-6">
-          <label for="quantity" class="form-label">
-            Initial Stock
-            <span class="text-danger">*</span>
-          </label>
-          <input type="number" class="form-control" placeholder="Enter quantity" name="quantity"
-            value="{{ old('quantity') }}" required>
-        </div> -->
+          <div class="mb-3 col-md-6">
+            <label for="quantity" class="form-label">
+              Initial Stock
+              <span class="text-danger">*</span>
+            </label>
+            <input type="number" class="form-control" placeholder="Enter quantity" name="quantity"
+              value="{{ old('quantity') }}" required>
+          </div>
           <div class="mb-3 col-md-6">
             <label for="unit_id" class="form-label">
               Unit
