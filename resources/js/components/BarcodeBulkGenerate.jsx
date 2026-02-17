@@ -15,13 +15,14 @@ const BarcodeBulkGenerate = () => {
 
   // Paper size options
   const paperSizeOptions = [
-    { value: "24-per-sheet", label: "24 per sheet (a4) (2.48 * 1.334)", width: 63.0, height: 33.9 },
-    { value: "20-per-sheet", label: "20 per sheet (4 * 1)", width: 101.6, height: 25.4 },
-    { value: "18-per-sheet", label: "18 per sheet (a4) (2.5 * 1.835)", width: 63.5, height: 46.6 },
-    { value: "14-per-sheet", label: "14 per sheet (4 * 1.33)", width: 101.6, height: 33.8 },
-    { value: "12-per-sheet", label: "12 per sheet (a4) (2.5 * 2.834)", width: 63.5, height: 72.0 },
-    { value: "10-per-sheet", label: "10 per sheet (4 * 2)", width: 101.6, height: 50.8 },
-    { value: "thermal-2x1", label: "Thermal Label (2x1 inch)", width: 50.8, height: 25.4 },
+    // { value: "24-per-sheet", label: "24 per sheet (a4) (2.48 * 1.334)", width: 63.0, height: 33.9 },
+    // { value: "20-per-sheet", label: "20 per sheet (4 * 1)", width: 101.6, height: 25.4 },
+    // { value: "18-per-sheet", label: "18 per sheet (a4) (2.5 * 1.835)", width: 63.5, height: 46.6 },
+    // { value: "14-per-sheet", label: "14 per sheet (4 * 1.33)", width: 101.6, height: 33.8 },
+    // { value: "12-per-sheet", label: "12 per sheet (a4) (2.5 * 2.834)", width: 63.5, height: 72.0 },
+    // { value: "10-per-sheet", label: "10 per sheet (4 * 2)", width: 101.6, height: 50.8 },
+    { value: "thermal-2x1", label: "Thermal Barcode (2 * 1.5 inch)", width: 50.8, height: 38.1 },
+    { value: "thermal-4x1", label: "Thermal Label (1.5 * 0.5 inch)", width: 38, height: 15 },
     { value: "custom", label: "Custom Size", width: 0, height: 0 }
   ];
 
