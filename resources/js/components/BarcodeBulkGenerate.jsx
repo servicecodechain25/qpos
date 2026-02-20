@@ -1,5 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
+import AsyncSelect from "react-select/async";
 import axios from "axios";
+import debounce from "lodash.debounce";
 import Select from "react-select";
 
 const BarcodeBulkGenerate = () => {
@@ -12,7 +14,7 @@ const BarcodeBulkGenerate = () => {
   const [paperSize, setPaperSize] = useState("thermal-2x1");
   const [customWidth, setCustomWidth] = useState(50.8);
   const [customHeight, setCustomHeight] = useState(38.1);
-
+  const [search, setSearch] = useState("");
   // Paper size options
   const paperSizeOptions = [
     // { value: "24-per-sheet", label: "24 per sheet (a4) (2.48 * 1.334)", width: 63.0, height: 33.9 },
@@ -48,23 +50,53 @@ const BarcodeBulkGenerate = () => {
   };
 
   useEffect(() => {
+    setLoading(true);
+
     axios
       .get("/admin/get/products")
       .then((res) => {
-        const productList = Array.isArray(res.data)
-          ? res.data
-          : res.data?.data || [];
-        setProducts(productList);
+        setProducts(res.data?.data || []);
       })
       .catch(() => {
         setProducts([]);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }, []);
 
+  // ✅ 2. Debounced search
+  useEffect(() => {
+    const delayDebounce = setTimeout(() => {
+      if (search.length < 2) return;
+
+      setLoading(true);
+
+      axios
+        .get("/admin/get/products", {
+          params: { search: search },
+        })
+        .then((res) => {
+          setProducts(res.data?.data || []);
+        })
+        .catch(() => {
+          setProducts([]);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+
+    }, 300);
+
+    return () => clearTimeout(delayDebounce);
+  }, [search]);
+
   const productOptions = products.map((p) => ({
     value: p.id,
-    label: p.name,
+    label: `${p.name} (${p.sku})`,
   }));
+
+
 
   const generateBarcodes = () => {
     if (productIds.length === 0 || quantity < 1) return;
@@ -107,12 +139,12 @@ const BarcodeBulkGenerate = () => {
         <div style={{ width: "400px" }}>
           <Select
             options={productOptions}
+            onInputChange={(value) => setSearch(value)}
             onChange={handleProductChange}
             placeholder="Search and select products..."
             isClearable
             isMulti
-            isDisabled={loading || products.length === 0}
-            value={productOptions.filter(opt => productIds.includes(opt.value))}
+            isLoading={loading}
           />
         </div>
 
@@ -157,7 +189,7 @@ const BarcodeBulkGenerate = () => {
           <option value="text-only">Text-Only Mode</option>
         </select>
 
-        <select
+        {/*<select
           value={paperSize}
           onChange={(e) => setPaperSize(e.target.value)}
           className="form-control"
@@ -166,7 +198,7 @@ const BarcodeBulkGenerate = () => {
           {paperSizeOptions.map(opt => (
             <option key={opt.value} value={opt.value}>{opt.label}</option>
           ))}
-        </select>
+        </select>*/}
 
         {paperSize === "custom" && (
           <>
@@ -241,14 +273,14 @@ const BarcodeBulkGenerate = () => {
           <button onClick={() => window.print()} className="btn btn-primary">
             🖨️ Print Barcodes
           </button>
-          <p className="text-muted small mt-2 mb-0">
+          {/* <p className="text-muted small mt-2 mb-0">
             {(() => {
               const size = getSelectedPaperSize();
               const widthInch = (size.width / 25.4).toFixed(2);
               const heightInch = (size.height / 25.4).toFixed(2);
               return `Thermal printer: set paper size to ${widthInch}" × ${heightInch}" (${size.width}mm × ${size.height}mm) and turn off Headers and footers in the print dialog.`;
             })()}
-          </p>
+          </p> */}
         </div>
       )}
 
@@ -303,8 +335,15 @@ const BarcodeBulkGenerate = () => {
 
     @media print {
       @page {
-        size: ${size.width}mm ${size.height}mm;
+        size: 50.8mm 38.1mm;
         margin: 0;
+      }
+
+      .mode-text-only {
+        @page {
+          size: 50.8mm 12.7mm;
+          margin: 0;
+        }
       }
       
       body {
@@ -322,14 +361,14 @@ const BarcodeBulkGenerate = () => {
       
       .print-only {
         display: block !important;
-        width: ${size.width}mm !important;
+        width: 50.8mm !important;
         margin: 0 !important;
         padding: 0 !important;
       }
 
       .barcode-label-print {
-        width: ${size.width}mm !important;
-        height: ${size.height}mm !important;
+        width: 50.8mm !important;
+        height: 38.1mm !important;
         padding: 0.5mm !important;
         box-sizing: border-box !important;
         display: flex !important;
@@ -340,6 +379,10 @@ const BarcodeBulkGenerate = () => {
         page-break-after: always !important;
         break-after: page !important;
         overflow: hidden !important;
+      }
+
+      .mode-text-only .barcode-label-print {
+        height: 18.7mm !important;
       }
 
       .barcode-label-print:last-child {
@@ -360,7 +403,7 @@ const BarcodeBulkGenerate = () => {
       .barcode-label-print img {
         width: 100% !important;
         height: 100% !important;
-        max-height: ${size.height - 5}mm !important;
+        max-height: 38mm !important;
         object-fit: contain !important;
         display: block !important;
       }

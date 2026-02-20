@@ -34,24 +34,27 @@ class CartController extends Controller
     }
     public function getProducts(Request $request)
     {
+        $products = Product::query()
+            ->active()
+            ->stocked()
 
-        $products = Product::query()->active()->stocked();
-        // Search by name if provided
-        $products->when($request->search, function ($query, $search) {
-            $query->where('name', 'LIKE', "%{$search}%");
-        });
+            // Search by name
+            ->when($request->filled('search'), function ($query) use ($request) {
+                $query->where('name', 'LIKE', '%' . $request->search . '%');
+            })
 
-        // Search by barcode if provided
-        $products->when($request->barcode, function ($query, $barcode) {
-            $query->where('sku', "%{$barcode}%");
-        });
-        $products = $products->with(['unit', 'color', 'size'])->latest()->paginate(100);
-        // $products = $products->latest()->get();
+            // Search by barcode (sku)
+            ->when($request->filled('barcode'), function ($query) use ($request) {
+                $query->where('sku', 'LIKE', '%' . $request->barcode . '%');
+            })
 
-        if (request()->wantsJson()) {
-            return ProductResource::collection($products);
-        }
+            ->with(['unit', 'color', 'size'])
+            ->latest()
+            ->paginate(200);
+
+        return response()->json($products);
     }
+
 
     public function store(Request $request)
     {

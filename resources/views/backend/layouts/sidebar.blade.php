@@ -52,23 +52,15 @@ $route = request()->route()->getName();
                     </p>
                 </a>
                 <ul class="nav nav-treeview">
-                    @can('sale_create')
-                    <li class="nav-item">
-                        <a href="{{ route('backend.admin.cart.index') }}"
-                            class="nav-link {{ $route === 'backend.admin.cart.index' ? 'active' : '' }}">
-                            <i class="fas fa-circle nav-icon"></i>
-                            <p>Barcode Scanner</p>
-                        </a>
-                    </li>
-                    @endcan
+                    
                     @can('product_view')
                     <li class="nav-item">
-    <a href="{{ route('backend.barcode.generator') }}"
-       class="nav-link {{ request()->routeIs('backend.barcode.generator') ? 'active' : '' }}">
-        <i class="fas fa-barcode nav-icon"></i>
-        <p>Barcode Generator</p>
-    </a>
-</li>
+                        <a href="{{ route('backend.barcode.generator') }}"
+                        class="nav-link {{ request()->routeIs('backend.barcode.generator') ? 'active' : '' }}">
+                            <i class="fas fa-barcode nav-icon"></i>
+                            <p>Barcode Generator</p>
+                        </a>
+                    </li>
 
                     @endcan
                 </ul>

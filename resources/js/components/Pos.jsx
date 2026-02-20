@@ -224,8 +224,8 @@ export default function Pos() {
                         setCartUpdated(!cartUpdated);
                         setProductUpdated(!productUpdated);
                         toast.success(res?.data?.message);
-                        const width = 450;
-                        const height = 600;
+                        const width = 800;
+                        const height = 900;
                         const left = (window.screen.width - width) / 2;
                         const top = (window.screen.height - height) / 2;
                         window.open(`orders/pos-invoice/${res?.data?.order?.id}`, 'PrintReceipt', `width=${width},height=${height},top=${top},left=${left},scrollbars=yes`);
